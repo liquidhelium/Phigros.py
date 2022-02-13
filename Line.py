@@ -1,13 +1,12 @@
 import pyglet.sprite
 from pyglet.image import AbstractImage
 import pyglet.graphics
+import pyglet.image
 import View
 from Events import Events
 
 
 class Line:
-    texture: AbstractImage = pyglet.image.load("assets/line.png")
-    textureMask: AbstractImage = pyglet.image.load("assets/line_empty.png")
 
     def __init__(self, notesAbove, notesBelow, 
                 # bpm: int,
@@ -26,9 +25,10 @@ class Line:
 
     async def render(self, time):
         posXY = self.moveEvents.get(time)
-        print(posXY)
         alpha = self.disappearEvents.get(time)[0]
         angle = self.rotateEvents.get(time)[0]
-        View.draw(Line.textureMask, *posXY, ang=angle)
+        pic = pyglet.image.create(2000,4,
+            pyglet.image.SolidColorImagePattern((171,170,103,int(255*alpha))))
+        View.draw(pic, *posXY, ang=angle)
 
 
