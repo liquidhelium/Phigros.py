@@ -1,5 +1,6 @@
 from bisect import bisect
 
+
 def interpolate(x1, y1, x2, y2, x):
     "返回线性插值."
     try:
@@ -21,21 +22,49 @@ class Event:
     def __lt__(self, other): # a < b
         return other.startTime >= self.endTime 
 
-        
+    def __contains__(self, time): # a in b
+        return self.startTime <= time and self.endTime > time
+
+    def get(self,time):
+        return (interpolate(self.startTime, self.start,
+                            self.endTime, self.end,
+                            time),
+                interpolate(self.startTime, self.start2,
+                            self.endTime, self.end2,
+                            time))
+
+class SpeedEvent(Event):
+    def __init__(self, startTime, endTime, floorPosition, value, realFloor=0):
+        super().__init__(startTime, endTime)
+        self.floorPos = floorPosition
+        self.value = value
+        self.realFloor = realFloor
+    def get(self):
+        return self.floorPos, self.value, self.realFloor, self.startTime
+
+class OneNumEvent(Event):
+    def get(self,time):
+        return interpolate(self.startTime, self.start,
+                            self.endTime, self.end,
+                            time)
 
 class Events(list[Event]):
     def __init__(self, *pra) -> None:
         super().__init__(*pra)
+        self.cache = 0
+        self.lastTime = 0
 
     def get(self,time):
         "获取事件列表在 `time` 时的值."
-        event = self[bisect(self, Event(time, time))-1]
-        return (interpolate(event.startTime, event.start,
-                            event.endTime, event.end,
-                            time),
-                interpolate(event.startTime, event.start2,
-                            event.endTime, event.end2,
-                            time))
-                
-    
-
+        if time - self.lastTime < 16: # get cache
+            maxIter = self.cache + 5
+            while not (time in self[self.cache]):
+                self.cache += 1
+                if self.cache > maxIter:
+                    break
+            else:
+                event = self[self.cache]
+        else:
+            event = self[bisect(self, Event(time, time))-1]
+        
+        return event
