@@ -19,8 +19,8 @@ def realFloorSetterMaker(bpm):
         if isinstance(obj1,float):
             obj2.realFloor = obj1
         else:
-            obj2.realFloor = phiToSecond(obj1.endTime,bpm)*obj1.value
-        return obj2.realFloor
+            obj2.realFloor = phiToSecond(obj1.endTime-obj1.startTime,bpm)*obj1.value
+        return obj2.realFloor + phiToSecond(obj2.endTime-obj2.startTime,bpm)*obj2.value
     return setRealFloor
 
 def makeSpeedEvents(obj,bpm):

@@ -31,7 +31,7 @@ class Note:
         self.speed = speed
         self.floorPos = floorPos
         
-    def getRealY(self, lastSpdFloor, speed, realFloor, _):
+    def getRealY(self, lastSpdFloor, _, realFloor, __):
         return ((self.floorPos-lastSpdFloor) + realFloor )
     
     def getRealX(self):
@@ -44,7 +44,7 @@ class Note:
         spEvNow = speedEv.get(time).get()
         yline = spEvNow[2] + phiToSecond(time-spEvNow[3], bpm)*spEvNow[1]
         y=(y-yline)*(prop.screenHeight/2)
-        if y>=0:
+        if self.time+self.holdTime>=time:
             Note.texture[self.type].blit(x-self.anchors[self.type][0], 
                                          y-self.anchors[self.type][1])
     def __lt__(self,other):
