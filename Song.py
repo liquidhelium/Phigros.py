@@ -13,10 +13,10 @@ class Song:
         try:
             sprite = pyglet.sprite.Sprite(self.illustration) 
 
-            H_ratio = max(sprite.height, prop.screenWidth)/\
-                    min(sprite.height, prop.screenWidth) 
-            W_ratio = max(sprite.width, prop.screenHeight)/\
-                    min(sprite.width, prop.screenHeight) 
+            H_ratio = max(sprite.height, prop.screenHeight)/\
+                    min(sprite.height, prop.screenHeight) 
+            W_ratio = max(sprite.width, prop.screenWidth)/\
+                    min(sprite.width, prop.screenWidth) 
 
             sprite.scale = max(H_ratio, W_ratio)
             sprite.x = 0

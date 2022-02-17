@@ -16,7 +16,7 @@ class MyPlayer(pyglet.window.Window):
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)  # transparency
         # 谱面
         self.song = song
-        self.second = 14
+        self.second = 0
         self.need_draw = [
             self.song,
         ]
@@ -25,7 +25,7 @@ class MyPlayer(pyglet.window.Window):
         self.clear()
         for draw_object in self.need_draw:
             try:
-                time = (self.second / (60 / 138) * 32)
+                time = (self.second / (60 / 209) * 32)
                 draw_object.render(time).send(None)
             except StopIteration:
                 pass
@@ -34,8 +34,8 @@ class MyPlayer(pyglet.window.Window):
         self.second += dt
 
 
-with open("assets/Introduction_chart.json") as f:
-# with open("assets/Chart_IN_Error") as f:
+# with open("assets/Introduction_chart.json") as f:
+with open("assets/Chart_IN_Error") as f:
     chart = officalChartLoader(f)
     song = Song(
         chart,

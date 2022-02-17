@@ -3,8 +3,10 @@ def __init__():
     if not globals().get("dictionary"):
         dictionary = {}
 
-def __set__(arg,value):
+
+def __set__(arg, value):
     dictionary[arg] = value
+
 
 def __get__(arg):
     return dictionary[arg]
