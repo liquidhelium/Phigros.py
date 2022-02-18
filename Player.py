@@ -28,10 +28,14 @@ class MyPlayer(pyglet.window.Window):
                 time = (self.second / (60 / 209) * 32)
                 draw_object.render(time).send(None)
             except StopIteration:
-                pass
+                prop.fps += 1
 
     def tick(self, dt):
         self.second += dt
+
+    def printFPS(self, dt):
+        print(prop.fps)
+        prop.fps = 0
 
 
 # with open("assets/Introduction_chart.json") as f:
@@ -43,7 +47,9 @@ with open("assets/Chart_IN_Error") as f:
         pyglet.image.load("assets/illustrationBlur.png"))
     win = MyPlayer(song, 800, 450)
     prop.screenHeight, prop.screenWidth = (450, 800)
+    prop.fps = 0
     # player = pyglet.media.Player()
     # song.play(player,win.second+0.5)
-    clock.schedule_interval(win.tick, 1 / 60)
+    clock.schedule_interval(win.tick, 1 / 100)
+    clock.schedule_interval(win.printFPS, 1)
 pyglet.app.run()

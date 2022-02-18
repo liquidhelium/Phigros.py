@@ -71,6 +71,6 @@ class Notes(list[Note]):
     def getNearNotes(self, time, speedEv: Events, bpm):
         spEvNow = speedEv.get(time).get()
         yline = spEvNow[2] + phiToSecond(time - spEvNow[3], bpm) * spEvNow[1]
-        max = bisect(self, yline + 2)
-        min = bisect(self, yline - 2)
+        max = bisect(self, yline + 5)
+        min = bisect(self, yline - 5)
         return self[min:max]

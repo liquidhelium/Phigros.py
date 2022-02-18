@@ -1,2 +1,6 @@
 请假事宜.yml
 __pycache__/
+.vscode/settings.json
+player.build/
+player.cmd
+player.exe
