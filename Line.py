@@ -19,7 +19,7 @@ class Line:
         self.moveEvents = moveEvents
         self.rotateEvents = rotateEvents
 
-    def render(self, time):
+    async def render(self, time):
         posXYEv = self.moveEvents.get(time)
         alphaEv = self.disappearEvents.get(time)
         angleEv = self.rotateEvents.get(time)
@@ -31,9 +31,15 @@ class Line:
             pic.blit(-pic.width / 2, -pic.height / 2)
             for note in self.notesAbove.getNearNotes(time, self.speedEvents,
                                                      self.bpm):
-                note.render(self.speedEvents, self.bpm, time)
+                try:
+                    note.render(self.speedEvents, self.bpm, time).send(None)
+                except StopIteration:
+                    pass
             with Rotation(180):
                 for note in self.notesBelow.getNearNotes(
                         time, self.speedEvents, self.bpm):
-                    note.render(self.speedEvents, self.bpm,
-                                    time)
+                    try:
+                        note.render(self.speedEvents, self.bpm,
+                                    time).send(None)
+                    except StopIteration:
+                        pass

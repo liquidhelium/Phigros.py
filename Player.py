@@ -25,8 +25,10 @@ class MyPlayer(pyglet.window.Window):
     def on_draw(self):
         self.clear()
         for draw_object in self.need_draw:
-                time = (self.second / (60 / 138) * 32)
-                draw_object.render(time)
+            try:
+                time = (self.second / (60 / 209) * 32)
+                draw_object.render(time).send(None)
+            except StopIteration:
                 prop.fps += 1
 
     def tick(self, dt):
@@ -37,8 +39,8 @@ class MyPlayer(pyglet.window.Window):
         prop.fps = 0
 
 
-with open("assets/Introduction_chart.json") as f:
-# with open("assets/Chart_IN_Error") as f:
+# with open("assets/Introduction_chart.json") as f:
+with open("assets/Chart_IN_Error") as f:
     chart = officalChartLoader(f)
     song = Song(
         chart,

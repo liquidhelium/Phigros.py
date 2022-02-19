@@ -49,7 +49,7 @@ class Note:
     def getRealX(self):
         return (self.posX) / 18 * prop.screenWidth
 
-    def render(self, speedEv: Events, bpm, time):
+    async def render(self, speedEv: Events, bpm, time):
         # we assume that the coordinate is translated.
         y = self.realY
         x = self.realX

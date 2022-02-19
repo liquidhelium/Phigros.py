@@ -9,7 +9,9 @@ class Chart:
         self.notesCount = notesCount
         self.lines = lines
 
-    def render(self, time):
+    async def render(self, time):
         for line in self.lines:
-            line.render(time)
-            
+            try:
+                line.render(time).send(None)
+            except StopIteration:
+                pass

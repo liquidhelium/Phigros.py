@@ -8,18 +8,22 @@ class Song:
         self.music=music
         self.illustration=illustration
     
-    def render(self, time):
-        H_ratio = max(self.illustration.height, prop.screenHeight)/\
-                min(self.illustration.height, prop.screenHeight) 
-        W_ratio = max(self.illustration.width, prop.screenWidth)/\
-                min(self.illustration.width, prop.screenWidth) 
+    async def render(self, time):
+        try:
 
-        self.illustration.scale = max(H_ratio, W_ratio)
-        texture = self.illustration.get_texture()
-        texture.height = 450
-        texture.width = 800
-        texture.blit(0,0)
-        self.chart.render(time)
+            H_ratio = max(self.illustration.height, prop.screenHeight)/\
+                    min(self.illustration.height, prop.screenHeight) 
+            W_ratio = max(self.illustration.width, prop.screenWidth)/\
+                    min(self.illustration.width, prop.screenWidth) 
+
+            self.illustration.scale = max(H_ratio, W_ratio)
+            texture = self.illustration.get_texture()
+            texture.height = 450
+            texture.width = 800
+            texture.blit(0,0)
+            self.chart.render(time).send(None)
+        except StopIteration: pass
+
     def play(self,player,time):
         player.queue(self.music)
         player.play()
