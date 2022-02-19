@@ -33,21 +33,33 @@ class Note:
         self.speed = speed
         self.floorPos = floorPos
 
+    def optmize(self, speedEv,bpm):
+        self.realY = self.getRealY(*speedEv.get(self.time).get())
+        self.realX = self.getRealX()
+        if self.type == 3:
+            spEvTail = speedEv.get(self.time+self.holdTime).get()
+            self.tailY =phiToSecond(self.holdTime, bpm) * spEvTail[1]
+            self.texture = Note.texture[3].get_texture()
+        else:
+            self.texture = Note.texture[self.type].get_texture()
+
     def getRealY(self, lastSpdFloor, _, realFloor, __):
         return ((self.floorPos - lastSpdFloor) + realFloor)
 
     def getRealX(self):
         return (self.posX) / 18 * prop.screenWidth
 
-    async def render(self, speedEv: Events, bpm, time):
+    def render(self, speedEv: Events, bpm, time):
         # we assume that the coordinate is translated.
-        y = self.getRealY(*speedEv.get(self.time).get())
-        x = self.getRealX()
+        y = self.realY
+        x = self.realX
         spEvNow = speedEv.get(time).get()
         yline = spEvNow[2] + phiToSecond(time - spEvNow[3], bpm) * spEvNow[1]
         y = (y - yline) * (prop.screenHeight / 2)
+        if self.type == 3:
+            self.texture.height = int((self.tailY)*prop.screenHeight/2)
         if self.time + self.holdTime >= time:
-            Note.texture[self.type].blit(x - self.anchors[self.type][0],
+            self.texture.blit(x - self.anchors[self.type][0],
                                          y - self.anchors[self.type][1])
 
     def __lt__(self, other):

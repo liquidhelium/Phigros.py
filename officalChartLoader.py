@@ -59,3 +59,11 @@ def officalChartLoader(file: TextIOWrapper):
     notesCount = filejson['numOfNotes']
     lines = [makeLine(line) for line in filejson["judgeLineList"]]
     return Chart(ver, offset, notesCount, lines)
+
+def optmize(chart):
+    lines = chart.lines
+    for line in lines:
+        for note in line.notesAbove:
+            note.optmize(line.speedEvents, line.bpm)
+        for note in line.notesBelow:
+            note.optmize(line.speedEvents, line.bpm)

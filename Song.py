@@ -1,30 +1,25 @@
-from pyglet.image import AbstractImage
+from pyglet.image import ImageData
 from Chart import Chart
-import pyglet.sprite
 import Properties as prop
 
 class Song:
-    def __init__(self, chart: Chart, music = None, illustration: AbstractImage = None):
+    def __init__(self, chart: Chart, music = None, illustration: ImageData = None):
         self.chart=chart
         self.music=music
         self.illustration=illustration
     
-    async def render(self, time):
-        try:
-            sprite = pyglet.sprite.Sprite(self.illustration) 
+    def render(self, time):
+        H_ratio = max(self.illustration.height, prop.screenHeight)/\
+                min(self.illustration.height, prop.screenHeight) 
+        W_ratio = max(self.illustration.width, prop.screenWidth)/\
+                min(self.illustration.width, prop.screenWidth) 
 
-            H_ratio = max(sprite.height, prop.screenHeight)/\
-                    min(sprite.height, prop.screenHeight) 
-            W_ratio = max(sprite.width, prop.screenWidth)/\
-                    min(sprite.width, prop.screenWidth) 
-
-            sprite.scale = max(H_ratio, W_ratio)
-            sprite.x = 0
-            sprite.y = 0
-            sprite.draw()
-            self.chart.render(time).send(None)
-        except StopIteration: pass
-
+        self.illustration.scale = max(H_ratio, W_ratio)
+        texture = self.illustration.get_texture()
+        texture.height = 450
+        texture.width = 800
+        texture.blit(0,0)
+        self.chart.render(time)
     def play(self,player,time):
         player.queue(self.music)
         player.play()
