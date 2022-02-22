@@ -5,7 +5,6 @@ import pyglet.sprite
 from Events import Events
 from View import Rotation, TranslationPhi
 
-
 class Line:
 
     def __init__(self, notesAbove, notesBelow, bpm: int, speedEvents: Events,
