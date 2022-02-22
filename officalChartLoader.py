@@ -60,7 +60,7 @@ def officalChartLoader(file: TextIOWrapper):
     lines = [makeLine(line) for line in filejson["judgeLineList"]]
     return Chart(ver, offset, notesCount, lines)
 
-def optmize(chart):
+def optimize(chart):
     lines = chart.lines
     for line in lines:
         for note in line.notesAbove:

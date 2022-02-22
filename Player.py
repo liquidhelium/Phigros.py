@@ -1,5 +1,5 @@
 from Song import Song
-from officalChartLoader import officalChartLoader, optmize
+from officalChartLoader import officalChartLoader, optimize
 import pyglet
 from pyglet import clock
 from pyglet.gl import *
@@ -8,7 +8,7 @@ import Properties as prop
 
 class MyPlayer(pyglet.window.Window):
 
-    def __init__(self, song: Song, *w):
+    def __init__(self, song: Song,player, *w):
         super(MyPlayer, self).__init__(*w)
         glEnable(GL_LINE_SMOOTH)
         glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE)
@@ -17,7 +17,8 @@ class MyPlayer(pyglet.window.Window):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         # 谱面
         self.song = song
-        self.second = 80
+        self.player = player
+        self.second = 0
         self.need_draw = [
             self.song,
         ]
@@ -35,8 +36,12 @@ class MyPlayer(pyglet.window.Window):
         self.second += dt
 
     def printFPS(self, dt):
-        print(prop.fps)
+        print(prop.fps, self.player.time, self.second)
         prop.fps = 0
+    
+    def syncSong(self, dt):
+        if abs(self.player.time - self.second) > 0.1:
+            self.player.seek(self.second)
 
 
 # with open("assets/Introduction_chart.json") as f:
@@ -46,12 +51,14 @@ with open("assets/Chart_IN_Error") as f:
         chart,
          pyglet.media.load("assets/Introduction.mp3"),
         pyglet.image.load("assets/illustrationBlur.png"))
-    win = MyPlayer(song, 800, 450)
-    prop.screenHeight, prop.screenWidth = (450, 800)
-    optmize(song.chart)
-    prop.fps = 0
     player = pyglet.media.Player()
-    song.play(player,win.second+0.5)
-    clock.schedule_interval(win.tick, 1 / 200)
+    win = MyPlayer(song, player, 800, 450)
+    prop.screenHeight, prop.screenWidth = (450, 800)
+    optimize(song.chart)
+    prop.fps = 0
+    
+    song.play(player,win.second+2)
+    clock.schedule_interval(win.tick, 1 / 100)
     clock.schedule_interval(win.printFPS, 1)
+    clock.schedule_interval(win.syncSong, 2)
 pyglet.app.run()
