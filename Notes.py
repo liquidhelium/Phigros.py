@@ -7,7 +7,7 @@ import Events
 import Properties as prop
 from Events import Events
 from PhiTime import phiToSecond
-
+from HitAnimation import getHit
 
 class Note:
     texture: list[ImageData] = [
@@ -61,6 +61,11 @@ class Note:
         if self.time + self.holdTime >= time:
             self.texture.blit(x - self.anchors[self.type][0],
                                          y - self.anchors[self.type][1])
+        hit = getHit(phiToSecond(self.time - time,bpm)+0.5)
+        if hit:
+            hit.height = 128
+            hit.width = 128
+            hit.blit(x-64,-64)
 
     def __lt__(self, other):
         try:

@@ -17,7 +17,7 @@ class MyPlayer(pyglet.window.Window):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         # 谱面
         self.song = song
-        self.second = 14
+        self.second = 80
         self.need_draw = [
             self.song,
         ]
@@ -44,14 +44,14 @@ with open("assets/Chart_IN_Error") as f:
     chart = officalChartLoader(f)
     song = Song(
         chart,
-        None,  # pyglet.media.load("assets/Introduction.mp3"),
+         pyglet.media.load("assets/Introduction.mp3"),
         pyglet.image.load("assets/illustrationBlur.png"))
     win = MyPlayer(song, 800, 450)
     prop.screenHeight, prop.screenWidth = (450, 800)
     optmize(song.chart)
     prop.fps = 0
-    # player = pyglet.media.Player()
-    # song.play(player,win.second+0.5)
+    player = pyglet.media.Player()
+    song.play(player,win.second+0.5)
     clock.schedule_interval(win.tick, 1 / 200)
     clock.schedule_interval(win.printFPS, 1)
 pyglet.app.run()
