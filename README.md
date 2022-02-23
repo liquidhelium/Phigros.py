@@ -1,4 +1,4 @@
-# Phragmites
+# Phigros.py
 A new phigros chart player (very WIP)
 
 Currently, it can display note and line.
