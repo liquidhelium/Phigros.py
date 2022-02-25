@@ -58,7 +58,9 @@ def officalChartLoader(file: TextIOWrapper):
     offset = filejson['offset']
     notesCount = filejson['numOfNotes']
     lines = [makeLine(line) for line in filejson["judgeLineList"]]
-    return Chart(ver, offset, notesCount, lines)
+    chart =  Chart(ver, offset, notesCount, lines)
+    optimize(chart)
+    return chart
 
 def optimize(chart):
     lines = chart.lines

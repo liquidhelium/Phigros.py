@@ -3,7 +3,9 @@ import pyglet.image
 import pyglet.sprite
 
 from Events import Events
+from PhiTime import secondToPhi
 from View import Rotation, TranslationPhi
+from getSize import *
 
 class Line:
 
@@ -18,12 +20,13 @@ class Line:
         self.moveEvents = moveEvents
         self.rotateEvents = rotateEvents
 
-    async def render(self, time):
+    async def render(self, RTime):
+        time = secondToPhi(RTime, self.bpm)
         posXYEv = self.moveEvents.get(time)
         alphaEv = self.disappearEvents.get(time)
         angleEv = self.rotateEvents.get(time)
         pic = pyglet.image.create(
-            2000, 4,
+            int(getWidth(2000)), int(getHeight(4)),
             pyglet.image.SolidColorImagePattern(
                 (171, 170, 103, int(255 * alphaEv.get(time)))))
         with TranslationPhi(*posXYEv.get(time)), Rotation(angleEv.get(time)):

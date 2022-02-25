@@ -1,7 +1,7 @@
 from pyglet.gl import *
 from pyglet.image import ImageData
 
-import Properties as prop
+from getSize import *
 
 
 def draw(img: ImageData, x, y, ang):
@@ -27,8 +27,8 @@ class Rotation:
 class TranslationPhi:
 
     def __init__(self, phiX, phiY):
-        self.X = phiX * prop.screenWidth
-        self.Y = phiY * prop.screenHeight
+        self.X = phiX * getWidth()
+        self.Y = phiY * getHeight()
 
     def __enter__(self):
         glTranslatef(self.X, self.Y, 0.0)

@@ -6,10 +6,10 @@ from pyglet.gl import *
 import Properties as prop
 
 
-class MyPlayer(pyglet.window.Window):
+class SongPlayer(pyglet.window.Window):
 
-    def __init__(self, song: Song,player, *w):
-        super(MyPlayer, self).__init__(*w)
+    def __init__(self, song: Song,player, *w, **kw):
+        super(SongPlayer, self).__init__(*w,**kw)
         glEnable(GL_LINE_SMOOTH)
         glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE)
         glEnable(GL_BLEND)  # transparency
@@ -19,25 +19,23 @@ class MyPlayer(pyglet.window.Window):
         self.song = song
         self.player = player
         self.second = 0
+        self.fpsDisplay = pyglet.window.FPSDisplay(self)
+        self.fpsDisplay.update_period=1
         self.need_draw = [
             self.song,
         ]
 
     def on_draw(self):
         self.clear()
-        for draw_object in self.need_draw:
-            try:
-                time = (self.second / (60 / 209) * 32)
-                draw_object.render(time).send(None)
-            except StopIteration:
-                prop.fps += 1
+        try:
+            self.song.render(self.second).send(None)
+        except StopIteration:
+            pass
+        self.fpsDisplay.draw()
 
     def tick(self, dt):
         self.second += dt
 
-    def printFPS(self, dt):
-        print(prop.fps, self.player.time, self.second)
-        prop.fps = 0
     
     def syncSong(self, dt):
         if abs(self.player.time - self.second) > 0.1:
@@ -49,16 +47,14 @@ with open("assets/Chart_IN_Error") as f:
     chart = officalChartLoader(f)
     song = Song(
         chart,
-         pyglet.media.load("assets/Introduction.mp3"),
         pyglet.image.load("assets/illustrationBlur.png"))
     player = pyglet.media.Player()
-    win = MyPlayer(song, player, 800, 450)
+    win = SongPlayer(song, player, 800, 450,caption ="phi",style = pyglet.window.Window.WINDOW_STYLE_BORDERLESS)
     prop.screenHeight, prop.screenWidth = (450, 800)
     optimize(song.chart)
-    prop.fps = 0
     
-    song.play(player,win.second+2)
-    clock.schedule_interval(win.tick, 1 / 100)
-    clock.schedule_interval(win.printFPS, 1)
-    clock.schedule_interval(win.syncSong, 2)
+    song.play(player,win.second)
+    clock.schedule_interval(win.tick, 0.005)
+    #clock.schedule_interval(win.syncSong, 10)
+    
 pyglet.app.run()
