@@ -1,23 +1,21 @@
-from pyglet.image import ImageData, create, SolidColorImagePattern
+from PyQt5.QtGui import QImage, QColor
+from PyQt5.QtCore import QPoint, Qt
 from Chart import Chart
+from View import newPainter
 from getSize import *
 
 class Song:
-    cover = create(1000, 1000, 
-                    SolidColorImagePattern((0,0,0,128))).get_texture()
-    def __init__(self, chart: Chart, illustration: ImageData = None):
+    cover = QImage(1000, 1000, QImage.Format(QImage.Format.Format_RGBA64))
+    cover.fill(QColor(0,0,0,128))
+    def __init__(self, chart: Chart, illustration: QImage = None):
         self.chart=chart
-        self.illustration=illustration
+        self.illustration=illustration.scaled(int(getWidth(800)),int(getHeight(450)),
+            transformMode=Qt.TransformationMode.SmoothTransformation)
     
-    async def render(self, RTime):
+    async def render(self, RTime, painter: newPainter):
         try:
             if self.illustration:
-                texture = self.illustration.get_texture()
-                texture.height = getHeight(450)
-                texture.width = getWidth(800)
-                texture.blit(0,0)
-                Song.cover.height = texture.height
-                Song.cover.width = texture.width
-                Song.cover.blit(0,0)
-            self.chart.render(RTime).send(None)
+                painter.drawImage(QPoint(0,0),self.illustration)
+                painter.drawImage(0,0,self.cover)
+            self.chart.render(RTime, painter).send(None)
         except StopIteration: pass

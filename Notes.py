@@ -1,22 +1,22 @@
 from bisect import bisect
-import pyglet.image
-from pyglet.image import ImageData
+from PyQt5.QtGui import QImage
+from PyQt5.QtCore import QPointF
 
 import Events
 from Events import Events
 from PhiTime import phiToSecond
 from HitAnimation import getHit
 from getSize import getHeight, getWidth
+from View import newPainter
 
 class Note:
-    
         
-    texture: list[ImageData] = [
+    texture_: list[QImage] = [
         None,
-        pyglet.image.load("assets/tap.png"),
-        pyglet.image.load("assets/drag.png"),
-        pyglet.image.load("assets/hold.png"),
-        pyglet.image.load("assets/flick.png")
+        QImage("assets/tap.png"),
+        QImage("assets/drag.png"),
+        QImage("assets/hold.png"),
+        QImage("assets/flick.png")
     ]
     anchors = {
         1:(1,1),
@@ -39,9 +39,7 @@ class Note:
         if self.type == 3:
             spEvTail = speedEv.get(self.time+self.holdTime).get()
             self.tailY =phiToSecond(self.holdTime, bpm) * spEvTail[1]
-            self.texture = Note.texture[3].get_texture()
-        else:
-            self.texture = Note.texture[self.type].get_texture()
+
 
     def getRealY(self, lastSpdFloor, _, realFloor, __):
         return ((self.floorPos - lastSpdFloor) + realFloor)
@@ -49,7 +47,7 @@ class Note:
     def getRealX(self):
         return (self.posX) / 18 * getHeight(450)
 
-    async def render(self, speedEv: Events, bpm, time):
+    async def render(self, speedEv: Events, bpm, time, painter: newPainter):
         # we assume that the coordinate is translated.
         y = self.realY
         x = self.getRealX()
@@ -57,19 +55,27 @@ class Note:
         yline = spEvNow[2] + phiToSecond(time - spEvNow[3], bpm) * spEvNow[1]
         y = (y - yline) * (getHeight(450) / 2)
         if self.type == 3:
-            self.texture.height = int((self.tailY)*getHeight(450)/2)
+            self.texture = Note.texture_[3].scaled(
+                int(getWidth(Note.texture_[3].width())),
+                int((self.tailY)*getHeight(450)/2)
+                )
+        else:
+            self.texture = Note.texture_[self.type].scaled(
+                int(getWidth(Note.texture_[self.type].width())), 
+                int(getHeight(Note.texture_[self.type].height()))
+                )
         if self.time + self.holdTime >= time:
             an = self.getAnchor()
-            self.texture.blit(x - an[0], y - an[1])
+            painter.drawImage(QPointF(x - an[0], y - an[1]), self.texture)
+        
         hit = getHit(phiToSecond(self.time - time,bpm)+0.5)
         if hit:
-            hit.height = getHeight(128)
-            hit.width = getWidth(128)
-            hit.blit(x-hit.width//2,-hit.height//2)
+            painter.drawImage(QPointF(x-hit.width()//2,-hit.height()//2),
+                 hit.scaled(int(getWidth(128)), int(getHeight(128))))
 
     def getAnchor(self):
-        return getHeight(Note.texture[self.anchorLabel[0]].width / 2),\
-               getWidth(Note.texture[self.anchorLabel[1]].height / 2)
+        return getHeight(Note.texture_[self.anchorLabel[0]].width() / 2),\
+               getWidth(Note.texture_[self.anchorLabel[1]].height() / 2)
         
 
     def __lt__(self, other):

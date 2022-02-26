@@ -1,6 +1,6 @@
 from Song import Song
 from officalChartLoader import officalChartLoader, optimize
-import pyglet
+import pyglet.app
 from pyglet import clock
 from pyglet.gl import *
 import Properties as prop
