@@ -19,7 +19,7 @@ def optimizeTexture(texture: QImage, segment: int):
 
 rawTexture= QImage("assets\\perfect.png")
         
-textures = list(optimizeTexture(rawTexture, 256))
+textures = list(reversed(list(optimizeTexture(rawTexture, 256))))
 def getHit(realTime):
     if realTime <= 0 or realTime > 0.5:
         return

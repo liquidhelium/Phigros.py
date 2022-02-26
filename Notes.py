@@ -1,6 +1,6 @@
 from bisect import bisect
 from PyQt5.QtGui import QImage
-from PyQt5.QtCore import QPointF
+from PyQt5.QtCore import QPoint
 
 import Events
 from Events import Events
@@ -66,12 +66,13 @@ class Note:
                 )
         if self.time + self.holdTime >= time:
             an = self.getAnchor()
-            painter.drawImage(QPointF(x - an[0], y - an[1]), self.texture)
+            painter.drawImage(QPoint(int(x - an[0]),int( y - an[1])), self.texture)
         
         hit = getHit(phiToSecond(self.time - time,bpm)+0.5)
         if hit:
-            painter.drawImage(QPointF(x-hit.width()//2,-hit.height()//2),
-                 hit.scaled(int(getWidth(128)), int(getHeight(128))))
+            hit = hit.scaled(int(getWidth(128)), int(getHeight(128)))
+            painter.drawImage(QPoint(int(x-hit.width()/2),int(-hit.height()/2)),
+                 hit,hit.rect())
 
     def getAnchor(self):
         return getHeight(Note.texture_[self.anchorLabel[0]].width() / 2),\
