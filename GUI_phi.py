@@ -11,11 +11,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(971, 833)
-        self.main = QtWidgets.QWidget(MainWindow)
+class Ui_PhiPlayer(object):
+    def setupUi(self, PhiPlayer):
+        PhiPlayer.setObjectName("PhiPlayer")
+        PhiPlayer.resize(971, 833)
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
+        PhiPlayer.setFont(font)
+        icon = QtGui.QIcon.fromTheme("Fusion")
+        PhiPlayer.setWindowIcon(icon)
+        PhiPlayer.setTabShape(QtWidgets.QTabWidget.Rounded)
+        self.main = QtWidgets.QWidget(PhiPlayer)
         self.main.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -24,7 +30,7 @@ class Ui_MainWindow(object):
         self.main.setSizePolicy(sizePolicy)
         self.main.setObjectName("main")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.main)
-        self.verticalLayout.setContentsMargins(-1, -1, -1, 0)
+        self.verticalLayout.setContentsMargins(-1, 20, -1, 0)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.ratioKeeper = KeepRatioWidget(self.main)
@@ -89,25 +95,26 @@ class Ui_MainWindow(object):
         self.controlArea = QtWidgets.QWidget(self.controlAreaOut)
         self.controlArea.setEnabled(True)
         font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
         font.setKerning(True)
         self.controlArea.setFont(font)
         self.controlArea.setObjectName("controlArea")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.controlArea)
         self.horizontalLayout_3.setSpacing(1)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.pause = QtWidgets.QPushButton(self.controlArea)
-        self.pause.setMinimumSize(QtCore.QSize(40, 35))
-        self.pause.setMaximumSize(QtCore.QSize(40, 35))
+        self.capture = QtWidgets.QPushButton(self.controlArea)
+        self.capture.setMinimumSize(QtCore.QSize(40, 35))
+        self.capture.setMaximumSize(QtCore.QSize(40, 35))
         font = QtGui.QFont()
         font.setFamily("Material Icons")
-        font.setPointSize(25)
+        font.setPointSize(18)
         font.setKerning(True)
-        self.pause.setFont(font)
-        self.pause.setText("")
-        self.pause.setFlat(True)
-        self.pause.setObjectName("pause")
-        self.horizontalLayout_3.addWidget(self.pause)
-        self.start = QtWidgets.QPushButton(self.controlArea)
+        self.capture.setFont(font)
+        self.capture.setText("")
+        self.capture.setFlat(True)
+        self.capture.setObjectName("capture")
+        self.horizontalLayout_3.addWidget(self.capture)
+        self.start = startButton(self.controlArea)
         self.start.setMinimumSize(QtCore.QSize(40, 35))
         self.start.setMaximumSize(QtCore.QSize(40, 35))
         font = QtGui.QFont()
@@ -121,26 +128,32 @@ class Ui_MainWindow(object):
         self.start.setObjectName("start")
         self.horizontalLayout_3.addWidget(self.start)
         self.start.raise_()
-        self.pause.raise_()
+        self.capture.raise_()
         self.horizontalLayout.addWidget(self.controlArea, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
         spacerItem1 = QtWidgets.QSpacerItem(40, 10, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.verticalLayout.addWidget(self.controlAreaOut)
-        MainWindow.setCentralWidget(self.main)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        PhiPlayer.setCentralWidget(self.main)
+        self.menubar = QtWidgets.QMenuBar(PhiPlayer)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 971, 26))
         self.menubar.setObjectName("menubar")
         self.menu = QtWidgets.QMenu(self.menubar)
         self.menu.setObjectName("menu")
-        MainWindow.setMenuBar(self.menubar)
-        self.actionopen = QtWidgets.QAction(MainWindow)
-        self.actionopen.setObjectName("actionopen")
-        self.menu.addAction(self.actionopen)
+        PhiPlayer.setMenuBar(self.menubar)
+        self.actionOpen = QtWidgets.QAction(PhiPlayer)
+        self.actionOpen.setObjectName("actionOpen")
+        self.actionPlayPause = QtWidgets.QAction(PhiPlayer)
+        self.actionPlayPause.setVisible(True)
+        self.actionPlayPause.setIconVisibleInMenu(True)
+        self.actionPlayPause.setShortcutVisibleInContextMenu(True)
+        self.actionPlayPause.setObjectName("actionPlayPause")
+        self.menu.addAction(self.actionOpen)
+        self.menu.addAction(self.actionPlayPause)
         self.menubar.addAction(self.menu.menuAction())
+        self.startTime.setBuddy(self.seekBar)
+        self.endTime.setBuddy(self.seekBar)
 
-        self.retranslateUi(MainWindow)
-        self.start.clicked.connect(self.player.start) # type: ignore
-        self.pause.clicked.connect(self.player.pause) # type: ignore
+        self.retranslateUi(PhiPlayer)
         self.seekBar.sliderPressed.connect(self.player.pause) # type: ignore
         self.seekBar.sliderReleased.connect(self.player.start) # type: ignore
         self.player.timeUpdate['int'].connect(self.seekBar.setValue) # type: ignore
@@ -149,17 +162,26 @@ class Ui_MainWindow(object):
         self.player.rangeLoaded['int','int'].connect(self.seekBar.setRange) # type: ignore
         self.seekBar.sliderMoved['int'].connect(self.player.seek) # type: ignore
         self.seekBar.valueChanged['int'].connect(self.startTime.setTime) # type: ignore
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        MainWindow.setTabOrder(self.pause, self.start)
+        self.start.pressed.connect(self.start.toggleText) # type: ignore
+        self.start.pressed.connect(self.player.toggle) # type: ignore
+        self.capture.pressed.connect(self.player.capture) # type: ignore
+        self.actionPlayPause.triggered.connect(self.player.toggle) # type: ignore
+        self.actionPlayPause.triggered.connect(self.start.toggleText) # type: ignore
+        QtCore.QMetaObject.connectSlotsByName(PhiPlayer)
+        PhiPlayer.setTabOrder(self.capture, self.start)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, PhiPlayer):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.player.setWhatsThis(_translate("MainWindow", "The main player"))
-        self.pause.setToolTip(_translate("MainWindow", "停止"))
-        self.start.setToolTip(_translate("MainWindow", "播放"))
-        self.menu.setTitle(_translate("MainWindow", "文件"))
-        self.actionopen.setText(_translate("MainWindow", "打开"))
+        PhiPlayer.setWindowTitle(_translate("PhiPlayer", "Phigros player"))
+        self.player.setWhatsThis(_translate("PhiPlayer", "The main player"))
+        self.capture.setToolTip(_translate("PhiPlayer", "停止"))
+        self.start.setToolTip(_translate("PhiPlayer", "播放"))
+        self.menu.setTitle(_translate("PhiPlayer", "文件(&F)"))
+        self.actionOpen.setText(_translate("PhiPlayer", "打开(&O)"))
+        self.actionOpen.setShortcut(_translate("PhiPlayer", "Ctrl+O"))
+        self.actionPlayPause.setText(_translate("PhiPlayer", "开始/暂停"))
+        self.actionPlayPause.setShortcut(_translate("PhiPlayer", "Space"))
 from integrated import IntegratedPlayer
 from keepRatioWidget import KeepRatioWidget
+from startButton import startButton
 from timeLable import TimeLableWidget

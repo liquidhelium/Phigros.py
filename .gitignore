@@ -1,6 +1,8 @@
 请假事宜.yml
 __pycache__/
+captures/
 .vscode/settings.json
+.vsCodeCounter/
 player.build/
 player.dist/
 player.cmd

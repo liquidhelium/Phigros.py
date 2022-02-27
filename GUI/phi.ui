@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>lqhe</author>
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>PhiPlayer</class>
+ <widget class="QMainWindow" name="PhiPlayer">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,8 +11,19 @@
     <height>833</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Microsoft YaHei UI</family>
+   </font>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Phigros player</string>
+  </property>
+  <property name="windowIcon">
+   <iconset theme="Fusion"/>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Rounded</enum>
   </property>
   <widget class="QWidget" name="main">
    <property name="enabled">
@@ -27,6 +38,9 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
      <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>20</number>
     </property>
     <property name="bottomMargin">
      <number>0</number>
@@ -112,6 +126,9 @@
          <property name="alignment">
           <set>Qt::AlignCenter</set>
          </property>
+         <property name="buddy">
+          <cstring>seekBar</cstring>
+         </property>
         </widget>
        </item>
        <item>
@@ -151,6 +168,9 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>seekBar</cstring>
          </property>
         </widget>
        </item>
@@ -198,6 +218,7 @@
          </property>
          <property name="font">
           <font>
+           <family>Microsoft YaHei UI</family>
            <kerning>true</kerning>
           </font>
          </property>
@@ -206,7 +227,7 @@
            <number>1</number>
           </property>
           <item>
-           <widget class="QPushButton" name="pause">
+           <widget class="QPushButton" name="capture">
             <property name="minimumSize">
              <size>
               <width>40</width>
@@ -222,7 +243,7 @@
             <property name="font">
              <font>
               <family>Material Icons</family>
-              <pointsize>25</pointsize>
+              <pointsize>18</pointsize>
               <kerning>true</kerning>
              </font>
             </property>
@@ -230,7 +251,7 @@
              <string>停止</string>
             </property>
             <property name="text">
-             <string notr="true"></string>
+             <string notr="true"></string>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -238,7 +259,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="start">
+           <widget class="startButton" name="start">
             <property name="minimumSize">
              <size>
               <width>40</width>
@@ -274,7 +295,7 @@
           </item>
          </layout>
          <zorder>start</zorder>
-         <zorder>pause</zorder>
+         <zorder>capture</zorder>
         </widget>
        </item>
        <item>
@@ -306,15 +327,36 @@
    </property>
    <widget class="QMenu" name="menu">
     <property name="title">
-     <string>文件</string>
+     <string>文件(&amp;F)</string>
     </property>
-    <addaction name="actionopen"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionPlayPause"/>
    </widget>
    <addaction name="menu"/>
   </widget>
-  <action name="actionopen">
+  <action name="actionOpen">
    <property name="text">
-    <string>打开</string>
+    <string>打开(&amp;O)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionPlayPause">
+   <property name="text">
+    <string>开始/暂停</string>
+   </property>
+   <property name="shortcut">
+    <string>Space</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
    </property>
   </action>
  </widget>
@@ -331,6 +373,8 @@
     <slot>start()</slot>
     <slot>seek(int)</slot>
     <slot>pause()</slot>
+    <slot>capture()</slot>
+    <slot>toggle()</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -347,45 +391,21 @@
    <header>keepRatioWidget</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>startButton</class>
+   <extends>QPushButton</extends>
+   <header>startButton</header>
+   <slots>
+    <slot>toggleText()</slot>
+   </slots>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>pause</tabstop>
+  <tabstop>capture</tabstop>
   <tabstop>start</tabstop>
  </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>start</sender>
-   <signal>clicked()</signal>
-   <receiver>player</receiver>
-   <slot>start()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>525</x>
-     <y>831</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>516</x>
-     <y>584</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pause</sender>
-   <signal>clicked()</signal>
-   <receiver>player</receiver>
-   <slot>pause()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>484</x>
-     <y>833</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>350</x>
-     <y>584</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>seekBar</sender>
    <signal>sliderPressed()</signal>
@@ -393,8 +413,8 @@
    <slot>pause()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>332</x>
-     <y>774</y>
+     <x>411</x>
+     <y>771</y>
     </hint>
     <hint type="destinationlabel">
      <x>322</x>
@@ -409,8 +429,8 @@
    <slot>start()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>567</x>
-     <y>795</y>
+     <x>646</x>
+     <y>771</y>
     </hint>
     <hint type="destinationlabel">
      <x>557</x>
@@ -429,8 +449,8 @@
      <y>584</y>
     </hint>
     <hint type="destinationlabel">
-     <x>878</x>
-     <y>795</y>
+     <x>891</x>
+     <y>771</y>
     </hint>
    </hints>
   </connection>
@@ -445,8 +465,8 @@
      <y>584</y>
     </hint>
     <hint type="destinationlabel">
-     <x>947</x>
-     <y>796</y>
+     <x>948</x>
+     <y>772</y>
     </hint>
    </hints>
   </connection>
@@ -457,12 +477,12 @@
    <slot>setTime(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>31</x>
-     <y>621</y>
+     <x>42</x>
+     <y>587</y>
     </hint>
     <hint type="destinationlabel">
-     <x>22</x>
-     <y>775</y>
+     <x>44</x>
+     <y>772</y>
     </hint>
    </hints>
   </connection>
@@ -477,8 +497,8 @@
      <y>584</y>
     </hint>
     <hint type="destinationlabel">
-     <x>79</x>
-     <y>787</y>
+     <x>158</x>
+     <y>771</y>
     </hint>
    </hints>
   </connection>
@@ -489,8 +509,8 @@
    <slot>seek(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>669</x>
-     <y>780</y>
+     <x>748</x>
+     <y>771</y>
     </hint>
     <hint type="destinationlabel">
      <x>679</x>
@@ -505,14 +525,97 @@
    <slot>setTime(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>273</x>
-     <y>787</y>
+     <x>352</x>
+     <y>771</y>
     </hint>
     <hint type="destinationlabel">
-     <x>49</x>
-     <y>791</y>
+     <x>71</x>
+     <y>772</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>start</sender>
+   <signal>pressed()</signal>
+   <receiver>start</receiver>
+   <slot>toggleText()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>496</x>
+     <y>792</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>504</x>
+     <y>798</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>start</sender>
+   <signal>pressed()</signal>
+   <receiver>player</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>518</x>
+     <y>801</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>545</x>
+     <y>546</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>capture</sender>
+   <signal>pressed()</signal>
+   <receiver>player</receiver>
+   <slot>capture()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>465</x>
+     <y>790</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>468</x>
+     <y>568</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionPlayPause</sender>
+   <signal>triggered()</signal>
+   <receiver>player</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>486</x>
+     <y>396</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionPlayPause</sender>
+   <signal>triggered()</signal>
+   <receiver>start</receiver>
+   <slot>toggleText()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>505</x>
+     <y>802</y>
     </hint>
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>openFileToRead()</slot>
+ </slots>
 </ui>

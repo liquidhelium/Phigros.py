@@ -13,7 +13,6 @@ class KeepRatioWidget(QFrame):
     def resizeEvent(self, a0: QResizeEvent) -> None:
         old = a0.size()
         new = a0.size()
-        print(new)
         childs:list[QWidget] = self.children()
         if len(childs) > 1:
             raise ValueError("KeepRadioWidget: Too many childs")
