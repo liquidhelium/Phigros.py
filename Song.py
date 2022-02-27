@@ -1,35 +1,24 @@
-from pyglet.image import ImageData, create, SolidColorImagePattern
+from PyQt5.QtGui import QImage, QColor
+from PyQt5.QtCore import QPoint, Qt
 from Chart import Chart
-import Properties as prop
+from View import newPainter
+from getSize import *
 
 class Song:
-    cover = create(1000, 1000, 
-                    SolidColorImagePattern((0,0,0,128))).get_texture()
-    def __init__(self, chart: Chart, music = None, illustration: ImageData = None):
+    cover = QImage(1000, 1000, QImage.Format(QImage.Format.Format_RGBA64))
+    cover.fill(QColor(0,0,0,128))
+    def __init__(self, chart: Chart, illustration: QImage = None):
         self.chart=chart
-        self.music=music
-        self.illustration=illustration
+        self.illustration=illustration.mirrored(False,True)
     
-    async def render(self, time):
+    async def render(self, RTime, painter: newPainter):
         try:
-
-            H_ratio = max(self.illustration.height, prop.screenHeight)/\
-                    min(self.illustration.height, prop.screenHeight) 
-            W_ratio = max(self.illustration.width, prop.screenWidth)/\
-                    min(self.illustration.width, prop.screenWidth) 
-
-            self.illustration.scale = max(H_ratio, W_ratio)
-            texture = self.illustration.get_texture()
-            texture.height = 450
-            texture.width = 800
-            texture.blit(0,0)
-            Song.cover.height = prop.screenHeight
-            Song.cover.width = prop.screenWidth
-            Song.cover.blit(0,0)
-            self.chart.render(time).send(None)
+            if self.illustration:
+                painter.drawImage(QPoint(0,0),
+                        self.illustration.scaled(
+                            int(getWidth(800)),int(getHeight(450)),
+                transformMode=Qt.TransformationMode.SmoothTransformation)
+                        )
+                painter.drawImage(0,0,self.cover.scaled(int(getWidth(800)),int(getHeight(450)),))
+            self.chart.render(RTime, painter).send(None)
         except StopIteration: pass
-
-    def play(self,player,time):
-        player.queue(self.music)
-        player.play()
-        player.seek(time)

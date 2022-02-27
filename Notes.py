@@ -1,28 +1,23 @@
 from bisect import bisect
-
-import pyglet.image
-from pyglet.image import ImageData
+from PyQt5.QtGui import QImage
+from PyQt5.QtCore import QPoint, Qt, QRect
 
 import Events
-import Properties as prop
 from Events import Events
 from PhiTime import phiToSecond
 from HitAnimation import getHit
+from getSize import getHeight, getWidth
+from View import newPainter
+
 
 class Note:
-    texture: list[ImageData] = [
+
+    texture_: list[QImage] = [
         None,
-        pyglet.image.load("assets/tap.png"),
-        pyglet.image.load("assets/drag.png"),
-        pyglet.image.load("assets/hold.png"),
-        pyglet.image.load("assets/flick.png")
-    ]
-    anchors = [
-        None,
-        (texture[1].width / 2, texture[1].height / 2),
-        (texture[2].width / 2, texture[2].height / 2),
-        (texture[3].width / 2, texture[1].height / 2),
-        (texture[4].width / 2, texture[4].height / 2),
+        QImage("assets/tap.png").mirrored(False, True),
+        QImage("assets/drag.png").mirrored(False, True),
+        QImage("assets/hold.png").mirrored(False, True),
+        QImage("assets/flick.png").mirrored(False, True)
     ]
 
     def __init__(self, type, time, posX, holdTime, speed, floorPos) -> None:
@@ -33,39 +28,63 @@ class Note:
         self.speed = speed
         self.floorPos = floorPos
 
-    def optmize(self, speedEv,bpm):
+    def optmize(self, speedEv, bpm):
         self.realY = self.getRealY(*speedEv.get(self.time).get())
-        self.realX = self.getRealX()
         if self.type == 3:
             spEvTail = speedEv.get(self.time+self.holdTime).get()
-            self.tailY =phiToSecond(self.holdTime, bpm) * spEvTail[1]
-            self.texture = Note.texture[3].get_texture()
-        else:
-            self.texture = Note.texture[self.type].get_texture()
+            self.tailY = phiToSecond(self.holdTime, bpm) * spEvTail[1]
 
     def getRealY(self, lastSpdFloor, _, realFloor, __):
         return ((self.floorPos - lastSpdFloor) + realFloor)
 
     def getRealX(self):
-        return (self.posX) / 18 * prop.screenWidth
+        return (self.posX) / 9 * getHeight(450)
 
-    async def render(self, speedEv: Events, bpm, time):
+    async def render(self, speedEv: Events, bpm, time, painter: newPainter):
         # we assume that the coordinate is translated.
         y = self.realY
-        x = self.realX
+        x = self.getRealX()
         spEvNow = speedEv.get(time).get()
         yline = spEvNow[2] + phiToSecond(time - spEvNow[3], bpm) * spEvNow[1]
-        y = (y - yline) * (prop.screenHeight / 2)
+        y = (y - yline) * (getHeight(450) / 2)
         if self.type == 3:
-            self.texture.height = int((self.tailY)*prop.screenHeight/2)
+            self.texture = Note.texture_[3].scaled(
+                int(getWidth(Note.texture_[3].width())),
+                int((self.tailY)*getHeight(450)/2),
+                transformMode=Qt.TransformationMode.SmoothTransformation
+            )
+            # self.texture = self.texture.copy(QRect(0,256,
+            #         256,256))
+        else:
+            self.texture = Note.texture_[self.type].scaled(
+                int(getWidth(100)),
+                int(getHeight(Note.texture_[self.type].height()
+                              * 100/Note.texture_[self.type].width())),
+                transformMode=Qt.TransformationMode.SmoothTransformation
+            )
+        an = self.getAnchor(self.texture)
+        drawRect = QRect(0, int(-y),
+                         self.texture.width(), int(self.texture.height()+y))
+
         if self.time + self.holdTime >= time:
-            self.texture.blit(x - self.anchors[self.type][0],
-                                         y - self.anchors[self.type][1])
-        hit = getHit(phiToSecond(self.time - time,bpm)+0.5)
+
+            painter.drawImage(
+                QPoint(int(x - an[0]), int(- an[1])), self.texture, drawRect)
+
+        hit = getHit(phiToSecond(self.time - time, bpm)+0.5)
         if hit:
-            hit.height = 128
-            hit.width = 128
-            hit.blit(x-64,-64)
+            hit = hit.scaled(int(getWidth(128)), int(getHeight(128)),
+                             transformMode=Qt.TransformationMode.SmoothTransformation
+                             )
+            painter.drawImage(QPoint(int(x-hit.width()/2), int(-hit.height()/2)),
+                              hit, hit.rect())
+
+    def getAnchor(self, img: QImage):
+        if self.type == 3:
+            return img.width()/2, 5
+        else:
+            return img.width()/2, img.height()/2
+        
 
     def __lt__(self, other):
         try:
