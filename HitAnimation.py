@@ -21,7 +21,7 @@ rawTexture= QImage("assets\\perfect.png")
         
 textures = list(reversed(list(optimizeTexture(rawTexture, 256))))
 def getHit(realTime):
-    if realTime <= 0 or realTime > 0.5:
+    if realTime < 0 or realTime >= 0.5:
         return
     return textures[floor(realTime * 60)]
 

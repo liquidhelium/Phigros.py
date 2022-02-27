@@ -65,11 +65,10 @@ class Events(list[Event]):
             maxIter = self.cache + 5
             while not (time in self[self.cache]):
                 self.cache += 1
-                if self.cache > maxIter:
+                if self.cache > maxIter or self.cache >= len(self):
                     break
-            else:
-                event = self[self.cache]
-        else:
-            event = self[bisect(self, Event(time, time)) - 1]
-
-        return event
+            else:  # exit normally
+                return self[self.cache]
+        # break
+        self.cache = bisect(self, Event(time, time))-1
+        return self[self.cache]

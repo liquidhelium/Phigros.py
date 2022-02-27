@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(960, 857)
+        MainWindow.resize(971, 833)
         self.main = QtWidgets.QWidget(MainWindow)
         self.main.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -27,9 +27,17 @@ class Ui_MainWindow(object):
         self.verticalLayout.setContentsMargins(-1, -1, -1, 0)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.player = IntergratedPlayer(self.main)
+        self.ratioKeeper = KeepRatioWidget(self.main)
+        self.ratioKeeper.setAutoFillBackground(False)
+        self.ratioKeeper.setStyleSheet("background: grey")
+        self.ratioKeeper.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.ratioKeeper.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.ratioKeeper.setObjectName("ratioKeeper")
+        self.player = IntegratedPlayer(self.ratioKeeper)
+        self.player.setGeometry(QtCore.QRect(0, 150, 951, 401))
+        self.player.setStyleSheet("background:black")
         self.player.setObjectName("player")
-        self.verticalLayout.addWidget(self.player)
+        self.verticalLayout.addWidget(self.ratioKeeper)
         self.seekBarArea = QtWidgets.QWidget(self.main)
         self.seekBarArea.setMinimumSize(QtCore.QSize(0, 24))
         self.seekBarArea.setMaximumSize(QtCore.QSize(16777215, 24))
@@ -38,7 +46,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setSizeConstraint(QtWidgets.QLayout.SetMinimumSize)
         self.horizontalLayout_2.setContentsMargins(-1, 0, -1, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.startTime = QtWidgets.QLabel(self.seekBarArea)
+        self.startTime = TimeLableWidget(self.seekBarArea)
         self.startTime.setMinimumSize(QtCore.QSize(50, 0))
         self.startTime.setMaximumSize(QtCore.QSize(50, 16777215))
         font = QtGui.QFont()
@@ -49,11 +57,12 @@ class Ui_MainWindow(object):
         self.startTime.setObjectName("startTime")
         self.horizontalLayout_2.addWidget(self.startTime)
         self.seekBar = QtWidgets.QSlider(self.seekBarArea)
-        self.seekBar.setMaximum(1000)
+        self.seekBar.setMinimum(0)
+        self.seekBar.setMaximum(150)
         self.seekBar.setOrientation(QtCore.Qt.Horizontal)
         self.seekBar.setObjectName("seekBar")
         self.horizontalLayout_2.addWidget(self.seekBar)
-        self.endTime = QtWidgets.QLabel(self.seekBarArea)
+        self.endTime = TimeLableWidget(self.seekBarArea)
         self.endTime.setMinimumSize(QtCore.QSize(50, 0))
         self.endTime.setMaximumSize(QtCore.QSize(50, 16777215))
         font = QtGui.QFont()
@@ -111,13 +120,15 @@ class Ui_MainWindow(object):
         self.start.setFlat(True)
         self.start.setObjectName("start")
         self.horizontalLayout_3.addWidget(self.start)
+        self.start.raise_()
+        self.pause.raise_()
         self.horizontalLayout.addWidget(self.controlArea, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
         spacerItem1 = QtWidgets.QSpacerItem(40, 10, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.verticalLayout.addWidget(self.controlAreaOut)
         MainWindow.setCentralWidget(self.main)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 960, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 971, 26))
         self.menubar.setObjectName("menubar")
         self.menu = QtWidgets.QMenu(self.menubar)
         self.menu.setObjectName("menu")
@@ -129,16 +140,26 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.start.clicked.connect(self.player.start) # type: ignore
-        self.pause.clicked.connect(self.player.stop) # type: ignore
-        self.seekBar.valueChanged['int'].connect(self.player.setToTime) # type: ignore
-        self.player.endTimeLoaded['QString'].connect(self.endTime.setText) # type: ignore
-        self.player.timeUpdate['QString'].connect(self.startTime.setText) # type: ignore
+        self.pause.clicked.connect(self.player.pause) # type: ignore
+        self.seekBar.sliderPressed.connect(self.player.pause) # type: ignore
+        self.seekBar.sliderReleased.connect(self.player.start) # type: ignore
+        self.player.timeUpdate['int'].connect(self.seekBar.setValue) # type: ignore
+        self.player.endTimeLoaded['int'].connect(self.endTime.setTime) # type: ignore
+        self.player.timeUpdate['int'].connect(self.startTime.setTime) # type: ignore
+        self.player.rangeLoaded['int','int'].connect(self.seekBar.setRange) # type: ignore
+        self.seekBar.sliderMoved['int'].connect(self.player.seek) # type: ignore
+        self.seekBar.valueChanged['int'].connect(self.startTime.setTime) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.pause, self.start)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.player.setWhatsThis(_translate("MainWindow", "The main player"))
+        self.pause.setToolTip(_translate("MainWindow", "停止"))
+        self.start.setToolTip(_translate("MainWindow", "播放"))
         self.menu.setTitle(_translate("MainWindow", "文件"))
         self.actionopen.setText(_translate("MainWindow", "打开"))
-from intergrated import IntergratedPlayer
+from integrated import IntegratedPlayer
+from keepRatioWidget import KeepRatioWidget
+from timeLable import TimeLableWidget

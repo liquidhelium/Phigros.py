@@ -16,7 +16,7 @@
             "name": "Python: 调试文件",
             "type": "python",
             "request": "launch",
-            "program": "integrated.py",
+            "program": "player.py",
             "console": "integratedTerminal"
         }
     ]

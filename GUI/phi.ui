@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>960</width>
-    <height>857</height>
+    <width>971</width>
+    <height>833</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,36 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="IntergratedPlayer" name="player" native="true"/>
+     <widget class="KeepRatioWidget" name="ratioKeeper">
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: grey</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="IntegratedPlayer" name="player" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>150</y>
+         <width>951</width>
+         <height>401</height>
+        </rect>
+       </property>
+       <property name="whatsThis">
+        <string>The main player</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background:black</string>
+       </property>
+      </widget>
+     </widget>
     </item>
     <item>
      <widget class="QWidget" name="seekBarArea" native="true">
@@ -59,7 +88,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QLabel" name="startTime">
+        <widget class="TimeLableWidget" name="startTime">
          <property name="minimumSize">
           <size>
            <width>50</width>
@@ -87,8 +116,11 @@
        </item>
        <item>
         <widget class="QSlider" name="seekBar">
+         <property name="minimum">
+          <number>0</number>
+         </property>
          <property name="maximum">
-          <number>1000</number>
+          <number>150</number>
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -96,7 +128,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="endTime">
+        <widget class="TimeLableWidget" name="endTime">
          <property name="minimumSize">
           <size>
            <width>50</width>
@@ -194,6 +226,9 @@
               <kerning>true</kerning>
              </font>
             </property>
+            <property name="toolTip">
+             <string>停止</string>
+            </property>
             <property name="text">
              <string notr="true"></string>
             </property>
@@ -223,6 +258,9 @@
               <kerning>false</kerning>
              </font>
             </property>
+            <property name="toolTip">
+             <string>播放</string>
+            </property>
             <property name="text">
              <string notr="true"></string>
             </property>
@@ -235,6 +273,8 @@
            </widget>
           </item>
          </layout>
+         <zorder>start</zorder>
+         <zorder>pause</zorder>
         </widget>
        </item>
        <item>
@@ -260,7 +300,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>960</width>
+     <width>971</width>
      <height>26</height>
     </rect>
    </property>
@@ -280,17 +320,32 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>IntergratedPlayer</class>
+   <class>IntegratedPlayer</class>
    <extends>QWidget</extends>
-   <header>intergrated</header>
+   <header>integrated</header>
    <container>1</container>
    <slots>
-    <signal>endTimeLoaded(QString)</signal>
-    <signal>timeUpdate(QString)</signal>
+    <signal>endTimeLoaded(int)</signal>
+    <signal>timeUpdate(int)</signal>
+    <signal>rangeLoaded(int,int)</signal>
     <slot>start()</slot>
-    <slot>stop()</slot>
-    <slot>setToTime(int)</slot>
+    <slot>seek(int)</slot>
+    <slot>pause()</slot>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>TimeLableWidget</class>
+   <extends>QLabel</extends>
+   <header>timeLable</header>
+   <slots>
+    <slot>setTime(int)</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>KeepRatioWidget</class>
+   <extends>QFrame</extends>
+   <header>keepRatioWidget</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -306,12 +361,12 @@
    <slot>start()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>503</x>
+     <x>525</x>
      <y>831</y>
     </hint>
     <hint type="destinationlabel">
-     <x>526</x>
-     <y>759</y>
+     <x>516</x>
+     <y>584</y>
     </hint>
    </hints>
   </connection>
@@ -319,63 +374,143 @@
    <sender>pause</sender>
    <signal>clicked()</signal>
    <receiver>player</receiver>
-   <slot>stop()</slot>
+   <slot>pause()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>440</x>
-     <y>809</y>
+     <x>484</x>
+     <y>833</y>
     </hint>
     <hint type="destinationlabel">
-     <x>400</x>
-     <y>679</y>
+     <x>350</x>
+     <y>584</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>seekBar</sender>
+   <signal>sliderPressed()</signal>
+   <receiver>player</receiver>
+   <slot>pause()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>332</x>
+     <y>774</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>322</x>
+     <y>584</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>seekBar</sender>
+   <signal>sliderReleased()</signal>
+   <receiver>player</receiver>
+   <slot>start()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>567</x>
+     <y>795</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>557</x>
+     <y>584</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>player</sender>
+   <signal>timeUpdate(int)</signal>
+   <receiver>seekBar</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>883</x>
+     <y>584</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>878</x>
+     <y>795</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>player</sender>
+   <signal>endTimeLoaded(int)</signal>
+   <receiver>endTime</receiver>
+   <slot>setTime(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>928</x>
+     <y>584</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>947</x>
+     <y>796</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>player</sender>
+   <signal>timeUpdate(int)</signal>
+   <receiver>startTime</receiver>
+   <slot>setTime(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>31</x>
+     <y>621</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>22</x>
+     <y>775</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>player</sender>
+   <signal>rangeLoaded(int,int)</signal>
+   <receiver>seekBar</receiver>
+   <slot>setRange(int,int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>64</x>
+     <y>584</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>79</x>
+     <y>787</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>seekBar</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>player</receiver>
+   <slot>seek(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>669</x>
+     <y>780</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>679</x>
+     <y>547</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>seekBar</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>player</receiver>
-   <slot>setToTime(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>880</x>
-     <y>780</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>892</x>
-     <y>520</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>player</sender>
-   <signal>endTimeLoaded(QString)</signal>
-   <receiver>endTime</receiver>
-   <slot>setText(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>921</x>
-     <y>695</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>921</x>
-     <y>786</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>player</sender>
-   <signal>timeUpdate(QString)</signal>
    <receiver>startTime</receiver>
-   <slot>setText(QString)</slot>
+   <slot>setTime(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>11</x>
-     <y>718</y>
+     <x>273</x>
+     <y>787</y>
     </hint>
     <hint type="destinationlabel">
-     <x>22</x>
-     <y>795</y>
+     <x>49</x>
+     <y>791</y>
     </hint>
    </hints>
   </connection>
