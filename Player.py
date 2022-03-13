@@ -1,13 +1,11 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QDialog
 from GUI_phi import Ui_PhiPlayer
+from integrated import IntegratedPlayer
 
 
-class PhiPlayer(Ui_PhiPlayer):
-    def setupUi(self, PhiPlayer):
-        super().setupUi(PhiPlayer)
-        self.actionOpen.triggered.connect(self.openFileToRead)
-
+class PhiPlayer(QMainWindow):
     def openFileToRead(self):
+        player = self.findChild(IntegratedPlayer,"player")
         dialog = QFileDialog()
         filters = \
         [
@@ -21,17 +19,17 @@ class PhiPlayer(Ui_PhiPlayer):
             filter=";;".join(filters)
         )
         if file[1] == filters[0]:
-            self.player.loadSong(chartAddr=file[0])
+            player.loadSong(chartAddr=file[0])
         elif file[1] == filters[1]:
-            self.player.loadSong(illustrationAddr=file[0])
+            player.loadSong(illustrationAddr=file[0])
             
             
 
         
     
 app = QApplication([])
-window = QMainWindow()
-UI = PhiPlayer()
+window = PhiPlayer()
+UI = Ui_PhiPlayer()
 UI.setupUi(window)
 UI.player.loadSong(
     chartAddr="assets/Chart_IN_Error",

@@ -20,7 +20,8 @@
    <string>Phigros player</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="Fusion"/>
+   <iconset theme="Fusion">
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <property name="tabShape">
    <enum>QTabWidget::Rounded</enum>
@@ -370,6 +371,9 @@
     <signal>endTimeLoaded(int)</signal>
     <signal>timeUpdate(int)</signal>
     <signal>rangeLoaded(int,int)</signal>
+    <signal>toogled()</signal>
+    <signal>bePaused()</signal>
+    <signal>bePlayed()</signal>
     <slot>start()</slot>
     <slot>seek(int)</slot>
     <slot>pause()</slot>
@@ -397,6 +401,8 @@
    <header>startButton</header>
    <slots>
     <slot>toggleText()</slot>
+    <slot>setPause()</slot>
+    <slot>setPlay()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -537,22 +543,6 @@
   <connection>
    <sender>start</sender>
    <signal>pressed()</signal>
-   <receiver>start</receiver>
-   <slot>toggleText()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>496</x>
-     <y>792</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>504</x>
-     <y>798</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>start</sender>
-   <signal>pressed()</signal>
    <receiver>player</receiver>
    <slot>toggle()</slot>
    <hints>
@@ -599,14 +589,62 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionPlayPause</sender>
+   <sender>actionOpen</sender>
    <signal>triggered()</signal>
-   <receiver>start</receiver>
-   <slot>toggleText()</slot>
+   <receiver>PhiPlayer</receiver>
+   <slot>openFileToRead()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
      <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>485</x>
+     <y>416</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>player</sender>
+   <signal>toogled()</signal>
+   <receiver>start</receiver>
+   <slot>toggleText()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>511</x>
+     <y>522</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>509</x>
+     <y>810</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>player</sender>
+   <signal>bePaused()</signal>
+   <receiver>start</receiver>
+   <slot>setPlay()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>527</x>
+     <y>474</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>496</x>
+     <y>794</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>player</sender>
+   <signal>bePlayed()</signal>
+   <receiver>start</receiver>
+   <slot>setPause()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>486</x>
+     <y>396</y>
     </hint>
     <hint type="destinationlabel">
      <x>505</x>

@@ -1,5 +1,4 @@
 from Line import Line
-from View import newPainter
 
 
 class Chart:
@@ -10,9 +9,4 @@ class Chart:
         self.notesCount = notesCount
         self.lines = lines
 
-    async def render(self, RTime: int, painter: newPainter):
-        for line in self.lines:
-            try:
-                line.render(RTime, painter).send(None)
-            except StopIteration:
-                pass
+    

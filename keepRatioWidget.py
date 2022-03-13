@@ -23,6 +23,5 @@ class KeepRatioWidget(QFrame):
         else:
             new.setWidth(int(self.widthRatio * new.height() / self.heightRatio))
             child.move(int((old.width()-new.width())/2),0)
-        print(new)
         child.resize(new)
         return super().resizeEvent(a0)

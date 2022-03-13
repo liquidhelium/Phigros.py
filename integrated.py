@@ -8,29 +8,33 @@ from PyQt5.QtGui import QImage, QResizeEvent, QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 
-import Properties as prop
 from officalChartLoader import officalChartLoader
 from Song import Song
 from View import newPainter
 
 
+
 class IntegratedPlayer(QWidget):
 
     timeUpdate = pyqtSignal(int)
-    rangeLoaded = pyqtSignal(int, int)  # TODO
-    endTimeLoaded = pyqtSignal(int)  # TODO
+    rangeLoaded = pyqtSignal(int, int)
+    endTimeLoaded = pyqtSignal(int)
+    toogled = pyqtSignal() 
+    bePaused = pyqtSignal()
+    bePlayed = pyqtSignal()
 
     def __init__(self, parent) -> None:
 
         super().__init__(parent)
-        prop.screenWidth = 800
-        prop.screenHeight = 450
         self.startTime = time.perf_counter()
         self.now = self.startTime
-        self.paused = True
+        self.paused = False
         self.pausedAt = 0
+        self.fps = 0
+        self.fpstimer = self.startTimer(1000)
         self.timer: Union[int, None] = None
         self.musicPlayer = QMediaPlayer(self)
+        self.pause()
 
 
     def start(self):
@@ -41,6 +45,7 @@ class IntegratedPlayer(QWidget):
             self.startTime = self.now-self.pausedAt
             self.musicPlayer.play()
             self.paused = False
+            self.bePlayed.emit()
             self.pausedAt = 0
 
     def pause(self):
@@ -50,6 +55,7 @@ class IntegratedPlayer(QWidget):
                 self.timer = None
             self.paused = True
             self.musicPlayer.pause()
+            self.bePaused.emit()
             # avoid kill after released
 
             self.pausedAt = self.now - self.startTime
@@ -59,6 +65,7 @@ class IntegratedPlayer(QWidget):
             self.start()
         else:
             self.pause()
+        self.toogled.emit()
 
     def seek(self, time):
         oldPaused = self.paused
@@ -66,7 +73,7 @@ class IntegratedPlayer(QWidget):
         self.pausedAt = time
         self.update()
         if self.musicPlayer.isSeekable():
-            self.musicPlayer.setPosition(time*1000) # milisecond
+            self.musicPlayer.setPosition(int(time*1000)) # milisecond
         if not oldPaused:
             self.start()
 
@@ -85,30 +92,32 @@ class IntegratedPlayer(QWidget):
         painter.setWindow(0, self.height(), self.width(), -self.height())
         if not self.paused:
             self.now = time.perf_counter()
-            # self._syncSong()
+            self._syncSong(int((self.now-self.startTime)* 1000))
         else:
             self.now = self.startTime+self.pausedAt
-        try:
-            self.song.render((self.now-self.startTime),
-                             painter).send(None)
-        except StopIteration:
-            pass
+        
+        painter.drawSong((self.now-self.startTime),
+                            self.song)
+        self.fps += 1
         painter.end()
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
-        prop.screenWidth = a0.size().width()
-        prop.screenHeight = a0.size().height()
         return super().resizeEvent(a0)
 
     def timerEvent(self, a0) -> None:
-        self.update()
-        self.timeUpdate.emit(int(self.now-self.startTime))
+        if a0.timerId() == self.timer:
+            self.update()
+            self.timeUpdate.emit(int(self.now-self.startTime))
+        elif a0.timerId() == self.fpstimer:
+            print(self.fps)
+            self.fps=0
         return super().timerEvent(a0)
 
     def loadSong(self, illustrationAddr=None, musicAddr=None, chartAddr=None,):
         if illustrationAddr or musicAddr:
             try:
                 self.music = QMediaContent(QUrl(musicAddr))
+                
             except FileNotFoundError:
                 warn("Open music failed!")
                 self.music = None
@@ -134,7 +143,23 @@ class IntegratedPlayer(QWidget):
         self.timer: Union[int, None] = None
         if self.music:
             self.musicPlayer.setMedia(self.music)
+            self.musicPlayer.durationChanged.connect(self._durationReciver)
+            self.musicPlayer.positionChanged.connect(self._positionReciver)
+            # self.endTimeLoaded.emit(int(self.musicPlayer.duration()/1000))
 
+    def _durationReciver(self,du):
+        self.endTimeLoaded.emit(int(du/1000))
+        self.rangeLoaded.emit(0,int(du/1000))
+    
+    def _positionReciver(self, pos):
+        if pos >= self.musicPlayer.duration():
+            self.pause()
+    
+    def _syncSong(self,nowTime):
+        if abs(self.musicPlayer.position() - nowTime) >= 50:
+            self.musicPlayer.setPosition(nowTime)
+            print(abs(self.musicPlayer.position() - nowTime))
+        
 
 if __name__ == "__main__":
     app = QApplication([])

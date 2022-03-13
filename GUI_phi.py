@@ -162,11 +162,13 @@ class Ui_PhiPlayer(object):
         self.player.rangeLoaded['int','int'].connect(self.seekBar.setRange) # type: ignore
         self.seekBar.sliderMoved['int'].connect(self.player.seek) # type: ignore
         self.seekBar.valueChanged['int'].connect(self.startTime.setTime) # type: ignore
-        self.start.pressed.connect(self.start.toggleText) # type: ignore
         self.start.pressed.connect(self.player.toggle) # type: ignore
         self.capture.pressed.connect(self.player.capture) # type: ignore
         self.actionPlayPause.triggered.connect(self.player.toggle) # type: ignore
-        self.actionPlayPause.triggered.connect(self.start.toggleText) # type: ignore
+        self.actionOpen.triggered.connect(PhiPlayer.openFileToRead) # type: ignore
+        self.player.toogled.connect(self.start.toggleText) # type: ignore
+        self.player.bePaused.connect(self.start.setPlay) # type: ignore
+        self.player.bePlayed.connect(self.start.setPause) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(PhiPlayer)
         PhiPlayer.setTabOrder(self.capture, self.start)
 
