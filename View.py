@@ -9,8 +9,8 @@ from Song import Song
 from Line import Line
 
 class newPainter(QPainter):
-    def __init_subclass__(cls) -> None:
-        return super().__init_subclass__()
+    def __init__(self, *args):
+        super().__init__(*args)
 
     def TranslationPhi(painter: QPainter, x: int, y: int):
         class TranslationPhi:
@@ -59,7 +59,9 @@ class newPainter(QPainter):
                     int(self.getWidthForPercent(1)),
                     int(self.getHeightForPercent(1))))
             self.drawChart(RTime, song.chart).send(None)
-        except StopIteration: pass
+        except StopIteration: 
+            self.device().needGenTexture = False
+            pass
 
         
     async def drawChart(self, RTime: float, chart: Chart):
@@ -104,21 +106,24 @@ class newPainter(QPainter):
         spEvNow = speedEv.get(time).get()
         yline = spEvNow[2] + phiToSecond(time - spEvNow[3], bpm) * spEvNow[1]
         y = (y - yline) * (self.getHeightForPercent(1) / 2)
-        if note.type == 3:
-            texture = Note.texture_[3].scaled(
-                int(self.getWidthForPercent(Note.texture_[3].width()/800)),
-                int((note.tailY)*self.getHeightForPercent(1)/2),
-                transformMode=Qt.TransformationMode.SmoothTransformation
-            )
-            # texture = texture.copy(QRect(0,256,
-            #         256,256))
+        if not (note.textureCacheRes == self.device().size and note.textureCache):
+            if note.type == 3:
+                texture = Note.texture_[3].scaled(
+                    int(self.getWidthForPercent(Note.texture_[3].width()/800)),
+                    int((note.tailY)*self.getHeightForPercent(1)/2),
+                    transformMode= Qt.TransformationMode.SmoothTransformation
+                )
+            else:
+                texture = Note.texture_[note.type].scaled(
+                    int(self.getWidthForPercent(1/8)),
+                    int(self.getHeightForPercent((Note.texture_[note.type].height()
+                                * 100/Note.texture_[note.type].width())/450)),
+                    transformMode= Qt.TransformationMode.SmoothTransformation
+                )
+            note.textureCacheRes = self.device().size
+            note.textureCache = texture
         else:
-            texture = Note.texture_[note.type].scaled(
-                int(self.getWidthForPercent(1/8)),
-                int(self.getHeightForPercent((Note.texture_[note.type].height()
-                              * 100/Note.texture_[note.type].width())/450)),
-                transformMode=Qt.TransformationMode.SmoothTransformation
-            )
+            texture = note.textureCache
         an = note.getAnchor(texture)
         drawRect = QRect(0, int(-y),
                          texture.width(), 
@@ -138,7 +143,6 @@ class newPainter(QPainter):
             hit = hit.scaled(
                 int(self.getWidthForPercent(0.15)), 
                 int(self.getWidthForPercent(0.15)),
-                transformMode=Qt.TransformationMode.SmoothTransformation
             )
             self.drawImage(
                 QPoint(int(x-hit.width()/2), 

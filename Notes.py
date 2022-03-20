@@ -18,6 +18,8 @@ class Note:
     ]
 
     def __init__(self, type, time, posX, holdTime, speed, floorPos) -> None:
+        self.textureCache = None
+        self.textureCacheRes = (0,0)
         self.type = type
         self.time = time
         self.posX = posX

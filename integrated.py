@@ -40,7 +40,7 @@ class IntegratedPlayer(QWidget):
     def start(self):
         if self.paused:
             # avoid duplicate defining
-            self.timer = self.startTimer(10) if not self.timer else self.timer
+            self.timer = self.startTimer(5) if not self.timer else self.timer
             self.now = time.perf_counter()
             self.startTime = self.now-self.pausedAt
             self.musicPlayer.play()
@@ -87,12 +87,10 @@ class IntegratedPlayer(QWidget):
             painter = newPainter(self)
         else:
             painter = newPainter(device)
-        painter.setCompositionMode(
-            painter.CompositionMode.CompositionMode_SourceOver)
         painter.setWindow(0, self.height(), self.width(), -self.height())
         if not self.paused:
             self.now = time.perf_counter()
-            self._syncSong(int((self.now-self.startTime)* 1000))
+            # self._syncSong(int((self.now-self.startTime)* 1000))
         else:
             self.now = self.startTime+self.pausedAt
         
@@ -102,11 +100,13 @@ class IntegratedPlayer(QWidget):
         painter.end()
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
+        self.size = a0.size()
         return super().resizeEvent(a0)
 
     def timerEvent(self, a0) -> None:
         if a0.timerId() == self.timer:
             self.update()
+            # self.paintEvent()
             self.timeUpdate.emit(int(self.now-self.startTime))
         elif a0.timerId() == self.fpstimer:
             print(self.fps)
@@ -176,10 +176,6 @@ if __name__ == "__main__":
     )
     player.resize(800, 450)
     player.start()
-    timer = QTimer()
-    timer.setInterval(int(10))
-    timer.timeout.connect(player.update)
-    timer.start()
     win.show()
     app.exec()
     # Timer(5,player.pause).start()
