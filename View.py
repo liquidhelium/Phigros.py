@@ -46,7 +46,7 @@ class newPainter(QPainter):
     def getWidthForPercent(self, widthWant: float=1):
         return (widthWant) * self.device().width()
 
-    def drawSong(self, RTime: float, song: Song):
+    async def drawSong(self, RTime: float, song: Song):
         try:
             if song.illustration:
                 self.drawImage(0,0,
