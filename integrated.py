@@ -3,7 +3,7 @@ import time
 from typing import Union
 from warnings import warn
 
-from PyQt5.QtCore import QTimer, pyqtSignal, QUrl
+from PyQt5.QtCore import pyqtSignal, QUrl
 from PyQt5.QtGui import QImage, QResizeEvent, QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
@@ -40,7 +40,7 @@ class IntegratedPlayer(QWidget):
     def start(self):
         if self.paused:
             # avoid duplicate defining
-            self.timer = self.startTimer(5) if not self.timer else self.timer
+            self.timer = self.startTimer(6) if not self.timer else self.timer
             self.now = time.perf_counter()
             self.startTime = self.now-self.pausedAt
             self.musicPlayer.play()

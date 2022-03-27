@@ -1,4 +1,4 @@
-from PyQt5.QtGui import QPainter, QImage, QColor
+from PyQt5.QtGui import QPainter, QImage, QColor, QPen
 from PyQt5.QtCore import QPointF, Qt, QRect, QPoint
 from Chart import Chart
 from Events import Events
@@ -49,18 +49,24 @@ class newPainter(QPainter):
     async def drawSong(self, RTime: float, song: Song):
         try:
             if song.illustration:
-                self.drawImage(0,0,
-                    song.illustration.scaled(
+                if not (song.illustrationCacheRes == self.device().size 
+                    and song.illustrationCache):
+                    song.illustrationCache = song.illustration.scaled(
                         int(self.getWidthForPercent(1)),
                         int(self.getHeightForPercent(1)),
-                transformMode=Qt.TransformationMode.SmoothTransformation)
-                )
-                self.drawImage(0,0,song.cover.scaled(
-                    int(self.getWidthForPercent(1)),
-                    int(self.getHeightForPercent(1))))
+                        transformMode=Qt.TransformationMode.SmoothTransformation)
+                    song.illustrationCacheRes = self.device().size
+                self.drawImage(0, 0, song.illustrationCache)
+                if not (song.coverCacheRes == self.device().size 
+                    and song.coverCache):
+                    song.coverCache = song.cover.scaled(
+                        int(self.getWidthForPercent(1)),
+                        int(self.getHeightForPercent(1)))
+                    song.coverCacheRes = self.device().size
+                self.drawImage(0,0,song.coverCache)
+                    
             self.drawChart(RTime, song.chart).send(None)
-        except StopIteration: 
-            self.device().needGenTexture = False
+        except StopIteration:
             pass
 
         
@@ -77,13 +83,18 @@ class newPainter(QPainter):
         posXYEv = line.moveEvents.get(time)
         alphaEv = line.disappearEvents.get(time)
         angleEv = line.rotateEvents.get(time)
-        pic = QImage(int(self.getWidthForPercent(3)), 
-                    int(self.getHeightForPercent(0.01)),
-                    QImage.Format(QImage.Format.Format_RGBA64))
-        pic.fill(QColor(171, 170, 103, int(255 * alphaEv.get(time))))
+        # pic = QImage(int(self.getWidthForPercent(2)), 
+        #             int(self.getHeightForPercent(0.01)),
+        #             QImage.Format(QImage.Format.Format_RGBA64))
+        # pic.fill(QColor(171, 170, 103, int(255 * alphaEv.get(time))))
+        pen = QPen(QColor(171, 170, 103, int(255 * alphaEv.get(time))))
+        pen.setWidth(self.getHeightForPercent(0.01))
+        self.setPen(pen)
+
         with self.TranslationPhi(*posXYEv.get(time)), \
              self.Rotation(angleEv.get(time)):
-            self.drawImage(QPointF(-pic.width() / 2, -pic.height() / 2), pic)
+            # self.drawImage(QPointF(-pic.width() / 2, -pic.height() / 2), pic)
+            self.drawLine(-500,0,500,0)
             for note in line.notesAbove.getNearNotes(time, line.speedEvents,
                                                      line.bpm):
                 try:
