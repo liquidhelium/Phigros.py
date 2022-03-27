@@ -42,7 +42,7 @@ class SpeedEvent(Event):
         self.realFloor = realFloor
 
     def get(self):
-        return self.floorPos, self.value, self.realFloor, self.startTime
+        return self.floorPos, self.value, self.startTime
 
 
 class OneNumEvent(Event):

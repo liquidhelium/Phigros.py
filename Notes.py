@@ -28,13 +28,14 @@ class Note:
         self.floorPos = floorPos
 
     def optmize(self, speedEv, bpm):
-        self.realY = self.getRealY(*speedEv.get(self.time).get())
+        self.realY = self.getRealY()
+        self.realX = self.getRealX()
         if self.type == 3:
             spEvTail = speedEv.get(self.time+self.holdTime).get()
             self.tailY = phiToSecond(self.holdTime, bpm) * spEvTail[1]
 
-    def getRealY(self, lastSpdFloor, _, realFloor, __):
-        return ((self.floorPos - lastSpdFloor) + realFloor)
+    def getRealY(self):
+        return self.floorPos 
 
     def getRealX(self):
         return (self.posX) / 18
@@ -67,7 +68,7 @@ class Notes(list[Note]):
 
     def getNearNotes(self, time, speedEv: Events, bpm):
         spEvNow = speedEv.get(time).get()
-        yline = spEvNow[2] + phiToSecond(time - spEvNow[3], bpm) * spEvNow[1]
+        yline = spEvNow[0] + phiToSecond(time - spEvNow[2], bpm) * spEvNow[1]
         max = bisect(self, yline + 5)
         min = bisect(self, yline - 5)
         return self[min:max]

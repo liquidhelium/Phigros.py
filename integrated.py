@@ -93,11 +93,8 @@ class IntegratedPlayer(QWidget):
             # self._syncSong(int((self.now-self.startTime)* 1000))
         else:
             self.now = self.startTime+self.pausedAt
-        try:
-            painter.drawSong((self.now-self.startTime),
-                                self.song).send(None)
-        except StopIteration:
-            pass
+        painter.drawSong((self.now-self.startTime),
+                                self.song)
         self.fps += 1
         painter.end()
 

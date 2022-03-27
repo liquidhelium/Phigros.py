@@ -1,3 +1,4 @@
+from Events import Event, Events
 import profile
 import line_profiler
 from View import newPainter
@@ -23,7 +24,6 @@ def preWork():
     global time
     time = 90.0 # s
 
-@p
 def render():
     global picmap
     global time
@@ -31,23 +31,17 @@ def render():
     painter = newPainter()
     painter.begin(picmap)
     painter.setWindow(0, picmap.height(), picmap.width(), -picmap.height())
-    try:
-        painter.drawSong(time, song).send(None) #gen cache
-    except StopIteration:
-        pass
-    painter.drawSong = p(painter.drawSong)
-    painter.drawNote = p(painter.drawNote)
-    try:
-        painter.drawSong(time, song).send(None)
-    except StopIteration:
-        pass
+    painter.drawSong(time, song)
     painter.end()
 
 if __name__ == "__main__":
     app = QGuiApplication([])
-    # p.add_function(render)
-    p.add_function(newPainter.drawSong)
-
     preWork()
+    render()
+    newPainter.drawSong = p(newPainter.drawSong)
+    newPainter.drawNote = p(newPainter.drawNote)
+    newPainter.drawJudgeLine = p(newPainter.drawJudgeLine)
+    Events.get = p(Events.get)
+    
     render()
     p.print_stats()
