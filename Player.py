@@ -22,6 +22,8 @@ class PhiPlayer(QMainWindow):
             player.loadSong(chartAddr=file[0])
         elif file[1] == filters[1]:
             player.loadSong(illustrationAddr=file[0])
+        else:
+            player.loadSong(chartAddr=file[0])
             
             
 

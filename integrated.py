@@ -148,14 +148,15 @@ class IntegratedPlayer(QWidget):
             
             for rect, obj in self.objAndRects:
                 # self._debugRend.append(rect) #DEBUG
-                if rect.intersects(QRect(self.mousePressedPos,self.mousePressAndMovedPos)):
+                # if rect.intersected(QRect(self.mousePressedPos,self.mousePressAndMovedPos)).contains(rect): # 全部进入才算选择
+                if rect.intersects(QRect(self.mousePressedPos,self.mousePressAndMovedPos)): # 有交集就算选择
                     if self.ShiftPressed and (obj in self.selectionBefore):
                         if obj in self.selectedObj:
                             self.selectedObj.remove(obj)
                     else:
                         self.selectedObj |= set([obj])
                 elif (obj in self.selectedObj):
-                    if self.ShiftPressed:
+                    if self.ShiftPressed and obj in self.selectionBefore:
                         self.selectedObj |= set([obj])
                     else:
                         self.selectedObj.remove(obj)
