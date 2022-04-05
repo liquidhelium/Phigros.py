@@ -1,6 +1,7 @@
 from math import floor
 from PyQt5.QtGui import QImage
 from PyQt5.QtCore import QRect
+import time
 
 
 
@@ -19,9 +20,25 @@ def optimizeTexture(texture: QImage, segment: int):
 
 rawTexture= QImage("assets\\perfect.png")
         
-textures = list(reversed(list(optimizeTexture(rawTexture, 256))))
+textures = list(optimizeTexture(rawTexture, 256))
 def getHit(realTime):
     if realTime < 0 or realTime >= 0.5:
         return
     return textures[floor(realTime * 60)]
 
+class HitAnimation:
+    def __init__(self,startTime,x,y) -> None:
+        self.startTime = startTime
+        self.NowTime = -1
+        self.x = x
+        self.y = y
+
+    def getTexture(self):
+        hit = getHit(self.NowTime-self.startTime)
+        # if not hit:
+        #     del self
+        return hit
+
+    def updateTime(self, now):
+        self.NowTime = now
+        

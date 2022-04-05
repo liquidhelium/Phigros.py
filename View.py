@@ -55,7 +55,6 @@ class newPainter(QPainter):
                     int(self.getHeightForPercent(1)),
                     transformMode=Qt.TransformationMode.SmoothTransformation)
                 song.illustrationCacheRes = self.device().size
-            br = QBrush(song.illustrationCache)
             self.drawImage(0, 0, song.illustrationCache)
             if not (song.coverCacheRes == self.device().size 
                 and song.coverCache):
@@ -64,7 +63,7 @@ class newPainter(QPainter):
                     int(self.getHeightForPercent(1)))
                 song.coverCacheRes = self.device().size
             self.drawImage(0,0,song.coverCache)
-                
+        self.device().objAndRects = []
         self.drawChart(RTime, song.chart)
 
         
@@ -75,37 +74,29 @@ class newPainter(QPainter):
     
     def drawJudgeLine(self, RTime, line: Line):
         time = secondToPhi(RTime, line.bpm)
-        posXYEv = line.moveEvents.get(time)
-        alphaEv = line.disappearEvents.get(time)
-        angleEv = line.rotateEvents.get(time)
-        # pic = QImage(int(self.getWidthForPercent(2)), 
-        #             int(self.getHeightForPercent(0.01)),
-        #             QImage.Format(QImage.Format.Format_RGBA64))
-        # pic.fill(QColor(171, 170, 103, int(255 * alphaEv.get(time))))
-        pen = QPen(QColor(171, 170, 103, int(255 * alphaEv.get(time))))
+        pen = QPen(QColor(171, 170, 103, int(255 * line.getAlphaAtTime(RTime))))
         pen.setWidth(self.getHeightForPercent(0.01))
         self.setPen(pen)
 
-        with self.TranslationPhi(*posXYEv.get(time)), \
-             self.Rotation(angleEv.get(time)):
-            # self.drawImage(QPointF(-pic.width() / 2, -pic.height() / 2), pic)
+        with self.TranslationPhi(*line.getPosAtTime(RTime)), \
+             self.Rotation(line.getAngleAtTime(RTime)):
             self.drawLine(int(self.getWidthForPercent(-1)),0,int(self.getWidthForPercent(1)),0)
-            for note in line.notesAbove.getNearNotes(time, line.speedEvents,
-                                                     line.bpm):
-                self.drawNote(line.speedEvents, line.bpm, time, note)
+            self.drawEllipse(QPoint(0,0), 10, 10)
+            for note in line.notesAbove.getNearNotes(time):
+                self.drawNote(time, note)
             with self.Rotation(180):
-                for note in line.notesBelow.getNearNotes(
-                        time, line.speedEvents, line.bpm):
-                    self.drawNote(line.speedEvents, line.bpm,
-                                time, note)
+                for note in line.notesBelow.getNearNotes(time):
+                    self.drawNote(time, note)
+        for note in line.notesAbove.getNearNotes(time):
+                self.drawHit(time, note)
+        with self.Rotation(180):
+            for note in line.notesBelow.getNearNotes(time):
+                self.drawHit(time, note)
 
-    def drawNote(self, speedEv: Events, bpm, time, note: Note):
+    def drawNote(self, time, note: Note):
         # we assume that the coordinate is translated.
-        y = note.realY
-        x = self.getWidthForPercent(note.realX)
-        spEvNow = speedEv.get(time).get()
-        yline = spEvNow[0] + phiToSecond(time - spEvNow[2], bpm) * spEvNow[1]
-        y = (y - yline) * (self.getHeightForPercent(1) / 2)
+        x = self.getWidthForPercent(note.FloorX)
+        yline = note.parent.getFloorAtTime(time)
         if not (note.textureCacheRes == self.device().size and note.textureCache):
             if note.type == 3:
                 texture = Note.texture_[3].scaled(
@@ -125,9 +116,10 @@ class newPainter(QPainter):
         else:
             texture = note.textureCache
         an = note.getAnchor(texture)
-        drawRect = QRect(0, int(-y),
+        realY = self.getHeightForPercent((note.FloorY - yline)/2)
+        drawRect = QRect(0, int(-realY), 
                          texture.width(), 
-                         int(texture.height()+y))
+                         int(texture.height()+realY))
 
         if note.time + note.holdTime >= time:
 
@@ -137,17 +129,42 @@ class newPainter(QPainter):
                 texture, 
                 drawRect
             )
+            
+            
+            noteRect =  QRect(int(x-an[0]-2), int(max(realY-an[1],-2)), 
+                         texture.width()+4, 
+                         int(min(texture.height()+4,texture.height()+4+realY)))
+            self.device().objAndRects.append((self.worldTransform().mapRect(noteRect),note))
+            if self.device().selectedObj is note:
+                self.save()
+                pen = QPen(QColor(85, 230, 90))
+                pen.setWidth(3)
+                self.setBrush(QColor(82,115,255,150))
+                self.setPen(pen)
+                self.drawRect(noteRect)
+                self.restore()
+    
+    def drawHit(self, time, note):
+        
+        x = self.getWidthForPercent(note.FloorX)
+        if not (note.textureCacheRes == self.device().size and note.hitAnimations):
+            pos = note.parent.getPosAtTime(phiToSecond(note.time+1,note.parent.bpm)) 
 
-        hit = getHit(phiToSecond(note.time - time, bpm)+0.5)
-        if hit:
-            hit = hit.scaled(
-                int(self.getWidthForPercent(0.15)), 
-                int(self.getWidthForPercent(0.15)),
-            )
-            self.drawImage(
-                QPoint(int(x-hit.width()/2), 
-                int(-hit.height()/2)),
-                hit, hit.rect())
+            note.genHit(int(x),int(0),pos[0]*self.getWidthForPercent(),pos[1]*self.getHeightForPercent())
+        for hit in note.hitAnimations:
+            hit.updateTime(phiToSecond(time,note.parent.bpm))
+            texture = hit.getTexture()
+            
+            
+            if texture:
+                texture = texture.scaled(
+                    int(self.getWidthForPercent(0.15)), 
+                    int(self.getWidthForPercent(0.15)),
+                )
+                
+                
+                self.drawImage(QPoint(hit.x-texture.width()//2,hit.y-texture.height()//2),texture)
+            # self.drawEllipse(QPoint(hit.x,hit.y),500,500)
 
 
 

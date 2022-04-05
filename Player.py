@@ -32,7 +32,7 @@ window = PhiPlayer()
 UI = Ui_PhiPlayer()
 UI.setupUi(window)
 UI.player.loadSong(
-    chartAddr="assets/Chart_IN_Error",
+    chartAddr="assets/Introduction_Chart.json",
     musicAddr="assets/Introduction.mp3",
     illustrationAddr="./assets/IllustrationBlur.png",
     )

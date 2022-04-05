@@ -41,7 +41,7 @@ class SpeedEvent(Event):
         self.value = value
         self.realFloor = realFloor
 
-    def get(self):
+    def get(self,time):
         return self.floorPos, self.value, self.startTime
 
 
@@ -68,7 +68,7 @@ class Events(list[Event]):
                 if self.cache > maxIter or self.cache >= len(self):
                     break
             else:  # exit normally
-                return self[self.cache]
+                return self[self.cache].get(time)
         # break
         self.cache = bisect(self, Event(time, time))-1
-        return self[self.cache]
+        return self[self.cache].get(time)

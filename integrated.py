@@ -1,10 +1,10 @@
 
 import time
-from typing import Union
+from typing import Any, Union
 from warnings import warn
 
-from PyQt5.QtCore import pyqtSignal, QUrl
-from PyQt5.QtGui import QImage, QResizeEvent, QPixmap
+from PyQt5.QtCore import pyqtSignal, QUrl, QRect, QPoint
+from PyQt5.QtGui import QImage, QResizeEvent, QMouseEvent, QPixmap, QColor
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 
@@ -22,6 +22,7 @@ class IntegratedPlayer(QWidget):
     toogled = pyqtSignal() 
     bePaused = pyqtSignal()
     bePlayed = pyqtSignal()
+    # TRANSLATION = 
 
     def __init__(self, parent) -> None:
 
@@ -32,8 +33,11 @@ class IntegratedPlayer(QWidget):
         self.pausedAt = 0
         self.fps = 0
         self.fpstimer = self.startTimer(1000)
+        self.objAndRects: list[tuple[QRect,Any]] = []
+        self.selectedObj = None
         self.timer: Union[int, None] = None
         self.musicPlayer = QMediaPlayer(self)
+        # self._debugRend = [] # DEBUG
         self.pause()
 
 
@@ -73,7 +77,7 @@ class IntegratedPlayer(QWidget):
         self.pausedAt = time
         self.update()
         if self.musicPlayer.isSeekable():
-            self.musicPlayer.setPosition(int(time*1000)) # milisecond
+            self.musicPlayer.setPosition(int(time*2000)) # milisecond
         if not oldPaused:
             self.start()
 
@@ -87,6 +91,9 @@ class IntegratedPlayer(QWidget):
             painter = newPainter(self)
         else:
             painter = newPainter(device)
+        # painter.setBrush(QColor(0,0,0))
+        # for i in self._debugRend: painter.drawRect(i)
+        # painter.setBrush(QColor(0,0,0,0))
         painter.setWindow(0, self.height(), self.width(), -self.height())
         if not self.paused:
             self.now = time.perf_counter()
@@ -95,6 +102,7 @@ class IntegratedPlayer(QWidget):
             self.now = self.startTime+self.pausedAt
         painter.drawSong((self.now-self.startTime),
                                 self.song)
+        
         self.fps += 1
         painter.end()
 
@@ -111,6 +119,17 @@ class IntegratedPlayer(QWidget):
             print(self.fps)
             self.fps=0
         return super().timerEvent(a0)
+    
+    def mousePressEvent(self, a0: QMouseEvent) -> None:
+        for rect, obj in self.objAndRects:
+            # self._debugRend.append(rect) #DEBUG
+            if rect.contains(QPoint(a0.x(),self.height() -a0.y())):
+                self.selectedObj = obj
+                self.update()
+            elif self.selectedObj == obj:
+                self.selectedObj = None
+                self.update()
+        return super().mousePressEvent(a0)
 
     def loadSong(self, illustrationAddr=None, musicAddr=None, chartAddr=None,):
         if illustrationAddr or musicAddr:
@@ -147,8 +166,8 @@ class IntegratedPlayer(QWidget):
             # self.endTimeLoaded.emit(int(self.musicPlayer.duration()/1000))
 
     def _durationReciver(self,du):
-        self.endTimeLoaded.emit(int(du/1000))
-        self.rangeLoaded.emit(0,int(du/1000))
+        self.endTimeLoaded.emit(int(du/2000))
+        self.rangeLoaded.emit(0,int(du/2000))
     
     def _positionReciver(self, pos):
         if pos >= self.musicPlayer.duration():

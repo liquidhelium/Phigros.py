@@ -133,7 +133,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QSlider" name="seekBar">
+        <widget class="SeekBar" name="seekBar">
          <property name="minimum">
           <number>0</number>
          </property>
@@ -404,6 +404,11 @@
     <slot>setPause()</slot>
     <slot>setPlay()</slot>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>SeekBar</class>
+   <extends>QSlider</extends>
+   <header>slider</header>
   </customwidget>
  </customwidgets>
  <tabstops>

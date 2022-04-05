@@ -1,10 +1,10 @@
 from bisect import bisect
-from PyQt5.QtGui import QImage
+from PyQt5.QtGui import QImage, QTransform
+from PyQt5.QtCore import Qt
 
-import Events
-from Events import Events
+from Line import Line
 from PhiTime import phiToSecond
-from HitAnimation import getHit
+from HitAnimation import HitAnimation
 
 
 class Note:
@@ -17,7 +17,8 @@ class Note:
         QImage("assets/flick.png").mirrored(False, True)
     ]
 
-    def __init__(self, type, time, posX, holdTime, speed, floorPos) -> None:
+    def __init__(self, parent:Line,type, time, posX, holdTime, speed, floorPos) -> None:
+        self.parent = parent
         self.textureCache = None
         self.textureCacheRes = (0,0)
         self.type = type
@@ -26,18 +27,26 @@ class Note:
         self.holdTime = holdTime
         self.speed = speed
         self.floorPos = floorPos
+        self.hitAnimations: list[HitAnimation] = []
 
     def optmize(self, speedEv, bpm):
-        self.realY = self.getRealY()
-        self.realX = self.getRealX()
+        self.FloorY = self.getFloorY()
+        self.FloorX = self.getFloorX()
         if self.type == 3:
-            spEvTail = speedEv.get(self.time+self.holdTime).get()
+            spEvTail = speedEv.get(self.time+self.holdTime)
             self.tailY = phiToSecond(self.holdTime, bpm) * spEvTail[1]
 
-    def getRealY(self):
+    def genHit(self, realX, realY, lineX, lineY):
+        
+        ang = self.parent.getAngleAtTime(phiToSecond(self.time,self.parent.bpm))
+        trans =  QTransform()
+        trans.translate(lineX,lineY)
+        trans.rotate(ang, Qt.Axis.ZAxis)
+        self.hitAnimations.append(HitAnimation(phiToSecond(self.time,self.parent.bpm),*trans.map(realX,realY)))
+    def getFloorY(self):
         return self.floorPos 
 
-    def getRealX(self):
+    def getFloorX(self):
         return (self.posX) / 18
 
 
@@ -63,12 +72,12 @@ class Note:
 
 class Notes(list[Note]):
 
-    def __init__(self, *arg) -> None:
+    def __init__(self, parent: Line, *arg) -> None:
+        self.parent = parent
         super().__init__(*arg)
 
-    def getNearNotes(self, time, speedEv: Events, bpm):
-        spEvNow = speedEv.get(time).get()
-        yline = spEvNow[0] + phiToSecond(time - spEvNow[2], bpm) * spEvNow[1]
+    def getNearNotes(self, time):
+        yline = self.parent.getFloorAtTime(time)
         max = bisect(self, yline + 5)
         min = bisect(self, yline - 5)
         return self[min:max]

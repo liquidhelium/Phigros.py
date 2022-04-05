@@ -37,19 +37,22 @@ def makeOneNumEvents(obj):
     return Events([OneNumEvent(**event) for event in obj])
 
 
-def makeNote(obj):
-    return Note(obj["type"], obj["time"], obj["positionX"], obj["holdTime"],
+def makeNote(obj, parent):
+    return Note(parent, obj["type"], obj["time"], obj["positionX"], obj["holdTime"],
                 obj["speed"], obj["floorPosition"])
 
 
 def makeLine(obj):
     bpm = obj["bpm"]
-    return Line(Notes([makeNote(note) for note in obj["notesAbove"]]),
-                Notes([makeNote(note) for note in obj["notesBelow"]]), bpm,
+    line = Line(Notes(None),
+                Notes(None), bpm,
                 makeSpeedEvents(obj["speedEvents"], bpm),
                 makeOneNumEvents(obj["judgeLineDisappearEvents"]),
                 makeEvents(obj["judgeLineMoveEvents"]),
                 makeOneNumEvents(obj["judgeLineRotateEvents"]))
+    line.notesAbove = Notes(line, [makeNote(note, line) for note in obj["notesAbove"]])
+    line.notesBelow = Notes(line, [makeNote(note, line) for note in obj["notesBelow"]])
+    return line
 
 
 def officalChartLoader(file: TextIOWrapper):
