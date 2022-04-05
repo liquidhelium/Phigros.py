@@ -48,20 +48,20 @@ class newPainter(QPainter):
 
     def drawSong(self, RTime: float, song: Song):
         if song.illustration:
-            if not (song.illustrationCacheRes == self.device().size 
+            if not (song.illustrationCacheRes == self.device().size()
                 and song.illustrationCache):
                 song.illustrationCache = song.illustration.scaled(
                     int(self.getWidthForPercent(1)),
                     int(self.getHeightForPercent(1)),
                     transformMode=Qt.TransformationMode.SmoothTransformation)
-                song.illustrationCacheRes = self.device().size
+                song.illustrationCacheRes = self.device().size()
             self.drawImage(0, 0, song.illustrationCache)
-            if not (song.coverCacheRes == self.device().size 
+            if not (song.coverCacheRes == self.device().size()
                 and song.coverCache):
                 song.coverCache = song.cover.scaled(
                     int(self.getWidthForPercent(1)),
                     int(self.getHeightForPercent(1)))
-                song.coverCacheRes = self.device().size
+                song.coverCacheRes = self.device().size()
             self.drawImage(0,0,song.coverCache)
         self.device().objAndRects = []
         self.drawChart(RTime, song.chart)
@@ -97,7 +97,7 @@ class newPainter(QPainter):
         # we assume that the coordinate is translated.
         x = self.getWidthForPercent(note.FloorX)
         yline = note.parent.getFloorAtTime(time)
-        if not (note.textureCacheRes == self.device().size and note.textureCache):
+        if not (note.textureCacheRes == self.device().size() and note.textureCache):
             if note.type == 3:
                 texture = Note.texture_[3].scaled(
                     int(self.getWidthForPercent(Note.texture_[3].width()/800)),
@@ -111,7 +111,7 @@ class newPainter(QPainter):
                                 * 100/Note.texture_[note.type].width())/450)),
                     transformMode= Qt.TransformationMode.SmoothTransformation
                 )
-            note.textureCacheRes = self.device().size
+            note.textureCacheRes = self.device().size()
             note.textureCache = texture
         else:
             texture = note.textureCache
@@ -135,7 +135,7 @@ class newPainter(QPainter):
                          texture.width()+4, 
                          int(min(texture.height()+4,texture.height()+4+realY)))
             self.device().objAndRects.append((self.worldTransform().mapRect(noteRect),note))
-            if self.device().selectedObj is note:
+            if note in self.device().selectedObj:
                 self.save()
                 pen = QPen(QColor(85, 230, 90))
                 pen.setWidth(3)
@@ -147,7 +147,7 @@ class newPainter(QPainter):
     def drawHit(self, time, note):
         
         x = self.getWidthForPercent(note.FloorX)
-        if not (note.textureCacheRes == self.device().size and note.hitAnimations):
+        if not (note.textureCacheRes == self.device().size() and note.hitAnimations):
             pos = note.parent.getPosAtTime(phiToSecond(note.time+1,note.parent.bpm)) 
 
             note.genHit(int(x),int(0),pos[0]*self.getWidthForPercent(),pos[1]*self.getHeightForPercent())

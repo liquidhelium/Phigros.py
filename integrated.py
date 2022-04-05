@@ -3,10 +3,11 @@ import time
 from typing import Any, Union
 from warnings import warn
 
-from PyQt5.QtCore import pyqtSignal, QUrl, QRect, QPoint
-from PyQt5.QtGui import QImage, QResizeEvent, QMouseEvent, QPixmap, QColor
+from PyQt5.QtCore import pyqtSignal, QUrl, QRect, QPoint, Qt
+from PyQt5.QtGui import QImage, QResizeEvent, QMouseEvent, QPixmap, QTransform, QColor, QKeyEvent
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from Notes import Note
 
 from officalChartLoader import officalChartLoader
 from Song import Song
@@ -22,7 +23,7 @@ class IntegratedPlayer(QWidget):
     toogled = pyqtSignal() 
     bePaused = pyqtSignal()
     bePlayed = pyqtSignal()
-    # TRANSLATION = 
+    
 
     def __init__(self, parent) -> None:
 
@@ -34,12 +35,19 @@ class IntegratedPlayer(QWidget):
         self.fps = 0
         self.fpstimer = self.startTimer(1000)
         self.objAndRects: list[tuple[QRect,Any]] = []
-        self.selectedObj = None
+        self.selectedObj: set[Note] = set()
+        self.selectionBefore: set[Note] = set()
         self.timer: Union[int, None] = None
-        self.musicPlayer = QMediaPlayer(self)
+        self.musicPlayer = QMediaPlayer(self)   
+        self.TRANSLATION = QTransform()
+        self.TRANSLATION.rotate(180,Qt.Axis.XAxis)
+        self.mousePressedPos = None
+        self.mousePressAndMovedPos = None
+        self.ShiftPressed = False
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         # self._debugRend = [] # DEBUG
         self.pause()
-
+ 
 
     def start(self):
         if self.paused:
@@ -94,7 +102,8 @@ class IntegratedPlayer(QWidget):
         # painter.setBrush(QColor(0,0,0))
         # for i in self._debugRend: painter.drawRect(i)
         # painter.setBrush(QColor(0,0,0,0))
-        painter.setWindow(0, self.height(), self.width(), -self.height())
+        # painter.setWindow(0, self.height(), self.width(), -self.height())
+        painter.setWorldTransform(self.TRANSLATION)
         if not self.paused:
             self.now = time.perf_counter()
             # self._syncSong(int((self.now-self.startTime)* 1000))
@@ -102,12 +111,19 @@ class IntegratedPlayer(QWidget):
             self.now = self.startTime+self.pausedAt
         painter.drawSong((self.now-self.startTime),
                                 self.song)
-        
+        if self.mousePressedPos and self.mousePressAndMovedPos:
+            painter.setBrush(QColor(86,114,240,160))
+            painter.resetTransform()
+            painter.drawRect(QRect(self.mousePressedPos,self.mousePressAndMovedPos))
         self.fps += 1
         painter.end()
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
-        self.size = a0.size()
+        oldSize = self.size()
+        # self.size = a0.size()
+        self.TRANSLATION.reset()
+        self.TRANSLATION.rotate(180,Qt.Axis.XAxis)
+        self.TRANSLATION.translate(0,-self.size().height())
         return super().resizeEvent(a0)
 
     def timerEvent(self, a0) -> None:
@@ -121,15 +137,50 @@ class IntegratedPlayer(QWidget):
         return super().timerEvent(a0)
     
     def mousePressEvent(self, a0: QMouseEvent) -> None:
-        for rect, obj in self.objAndRects:
-            # self._debugRend.append(rect) #DEBUG
-            if rect.contains(QPoint(a0.x(),self.height() -a0.y())):
-                self.selectedObj = obj
-                self.update()
-            elif self.selectedObj == obj:
-                self.selectedObj = None
-                self.update()
+        
+        self.mousePressedPos = a0.pos()
+        self.selectionBefore =self.selectedObj.copy()
         return super().mousePressEvent(a0)
+    
+    def mouseMoveEvent(self, a0: QMouseEvent) -> None:
+        self.mousePressAndMovedPos = a0.pos()
+        if self.mousePressedPos and self.mousePressAndMovedPos:
+            
+            for rect, obj in self.objAndRects:
+                # self._debugRend.append(rect) #DEBUG
+                if rect.intersects(QRect(self.mousePressedPos,self.mousePressAndMovedPos)):
+                    if self.ShiftPressed and (obj in self.selectionBefore):
+                        if obj in self.selectedObj:
+                            self.selectedObj.remove(obj)
+                    else:
+                        self.selectedObj |= set([obj])
+                elif (obj in self.selectedObj):
+                    if self.ShiftPressed:
+                        self.selectedObj |= set([obj])
+                    else:
+                        self.selectedObj.remove(obj)
+                elif (obj in self.selectionBefore) and self.ShiftPressed:
+                    self.selectedObj |= set([obj])
+            self.update()
+        # self.update()
+        return super().mouseMoveEvent(a0)
+    
+    def mouseReleaseEvent(self, a0: QMouseEvent) -> None:
+        self.mousePressedPos = None
+        self.mousePressAndMovedPos = None
+        self.selectionBefore = self.selectedObj.copy()
+        self.update()
+        return super().mouseReleaseEvent(a0)
+    
+    def keyPressEvent(self, a0: QKeyEvent) -> None:
+        if a0.key() == Qt.Key.Key_Shift:
+            self.ShiftPressed = True
+        return super().keyPressEvent(a0)
+
+    def keyReleaseEvent(self, a0: QKeyEvent) -> None:
+        if a0.key() == Qt.Key.Key_Shift:
+            self.ShiftPressed = False
+        return super().keyReleaseEvent(a0)
 
     def loadSong(self, illustrationAddr=None, musicAddr=None, chartAddr=None,):
         if illustrationAddr or musicAddr:
