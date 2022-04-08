@@ -164,6 +164,15 @@ class newPainter(QPainter):
                 
                 
                 self.drawImage(QPoint(hit.x-texture.width()//2,hit.y-texture.height()//2),texture)
+            
+            particles = hit.genParticles()
+
+            if particles:
+                self.save()
+                self.pen().setWidth(20)
+                for p in particles:
+                    self.drawPoint(p)
+                self.restore()
             # self.drawEllipse(QPoint(hit.x,hit.y),500,500)
 
 

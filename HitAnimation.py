@@ -1,6 +1,7 @@
-from math import floor
+from math import cos, floor, pi, sin
+import random
 from PyQt5.QtGui import QImage
-from PyQt5.QtCore import QRect
+from PyQt5.QtCore import QRect, QPoint
 import time
 
 
@@ -32,12 +33,23 @@ class HitAnimation:
         self.NowTime = -1
         self.x = x
         self.y = y
+        self.randparticales = []
+        for _ in range(20):
+            self.randparticales.append((random.uniform(0,2*pi),random.uniform(0.7,1))) # 角度, 距离
 
     def getTexture(self):
         hit = getHit(self.NowTime-self.startTime)
         # if not hit:
         #     del self
         return hit
+
+    def genParticles(self) -> list[QPoint]:
+        realTime = self.NowTime-self.startTime
+        if realTime < 0 or realTime >= 0.5:
+            return
+        percent = -(realTime*2)**2 + (realTime*2)*2
+        maxDist = 100 
+        return [QPoint((percent*maxDist*j)*cos(i)+self.x,(percent*maxDist*j)*sin(i)+self.y) for i,j in self.randparticales]
 
     def updateTime(self, now):
         self.NowTime = now
