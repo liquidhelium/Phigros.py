@@ -7,11 +7,11 @@ from PyQt5.QtCore import pyqtSignal, QUrl, QRect, QPoint, Qt
 from PyQt5.QtGui import QImage, QResizeEvent, QMouseEvent, QPixmap, QTransform, QColor, QKeyEvent
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from Notes import Note
+from .Notes import Note
 
-from officalChartLoader import officalChartLoader
-from Song import Song
-from View import newPainter
+from .officalChartLoader import officalChartLoader
+from .Song import Song
+from .View import newPainter
 
 
 

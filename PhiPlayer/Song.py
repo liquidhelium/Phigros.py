@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QImage, QColor
-from Chart import Chart
+from .Chart import Chart
 
 class Song:
     cover = QImage(500, 500, QImage.Format(QImage.Format.Format_ARGB32))

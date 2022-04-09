@@ -49,7 +49,7 @@ class HitAnimation:
             return
         percent = -(realTime*2)**2 + (realTime*2)*2
         maxDist = 100 
-        return [QPoint((percent*maxDist*j)*cos(i)+self.x,(percent*maxDist*j)*sin(i)+self.y) for i,j in self.randparticales]
+        return [QPoint(int((percent*maxDist*j)*cos(i)+self.x),int((percent*maxDist*j)*sin(i)+self.y)) for i,j in self.randparticales]
 
     def updateTime(self, now):
         self.NowTime = now

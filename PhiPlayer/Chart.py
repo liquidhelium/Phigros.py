@@ -1,4 +1,4 @@
-from Line import Line
+from .Line import Line
 
 
 class Chart:

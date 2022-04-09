@@ -183,8 +183,8 @@ class Ui_PhiPlayer(object):
         self.actionOpen.setShortcut(_translate("PhiPlayer", "Ctrl+O"))
         self.actionPlayPause.setText(_translate("PhiPlayer", "开始/暂停"))
         self.actionPlayPause.setShortcut(_translate("PhiPlayer", "Space"))
-from integrated import IntegratedPlayer
-from keepRatioWidget import KeepRatioWidget
-from slider import SeekBar
-from startButton import startButton
-from timeLable import TimeLableWidget
+from .integrated import IntegratedPlayer
+from .keepRatioWidget import KeepRatioWidget
+from .slider import SeekBar
+from .startButton import startButton
+from .timeLable import TimeLableWidget

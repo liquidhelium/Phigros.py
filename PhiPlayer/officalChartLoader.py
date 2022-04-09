@@ -2,11 +2,11 @@ import json
 from functools import reduce
 from io import TextIOWrapper
 
-from Chart import Chart
-from Events import Event, Events, OneNumEvent, SpeedEvent
-from Line import Line
-from Notes import Note, Notes
-from PhiTime import phiToSecond
+from .Chart import Chart
+from .Events import Event, Events, OneNumEvent, SpeedEvent
+from .Line import Line
+from .Notes import Note, Notes
+from .PhiTime import phiToSecond
 
 
 def makeEvents(obj):

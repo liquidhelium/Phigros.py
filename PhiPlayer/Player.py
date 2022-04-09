@@ -1,9 +1,14 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
-from GUI_phi import Ui_PhiPlayer
-from integrated import IntegratedPlayer
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog,QWidget
+from .GUI_phi import Ui_PhiPlayer
+from .integrated import IntegratedPlayer
 
 
 class PhiPlayer(QMainWindow):
+    def __init__(self, *args) -> None:
+        super().__init__(*args)
+        self.ui = Ui_PhiPlayer()
+        self.ui.setupUi(self)
+        
     def openFileToRead(self):
         player = self.findChild(IntegratedPlayer,"player")
         dialog = QFileDialog()
@@ -24,6 +29,12 @@ class PhiPlayer(QMainWindow):
             player.loadSong(illustrationAddr=file[0])
         else:
             player.loadSong(chartAddr=file[0])
+    
+    def loadSong(self, illustrationAddr=None, musicAddr=None, chartAddr=None,):
+        self.ui.player.loadSong(illustrationAddr,musicAddr,chartAddr)
+
+    def setRatio(self, a0:int, a1:int):
+        self.ui.ratioKeeper.setRatio(a0,a1)
             
             
 
@@ -31,14 +42,12 @@ class PhiPlayer(QMainWindow):
 if __name__ == "__main__":
     app = QApplication([])
     window = PhiPlayer()
-    UI = Ui_PhiPlayer()
-    UI.setupUi(window)
-    UI.player.loadSong(
-        chartAddr="assets/Introduction_Chart.json",
-        musicAddr="assets/Introduction.mp3",
+    window.loadSong(
+        chartAddr="./assets/Introduction_Chart.json",
+        musicAddr="./assets/Introduction.mp3",
         illustrationAddr="./assets/IllustrationBlur.png",
         )
-    UI.ratioKeeper.setRatio(16,9)
+    window.setRatio(16,9)
     window1 = QMainWindow()
     window.setParent(window1)
     window1.setCentralWidget(window)

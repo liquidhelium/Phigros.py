@@ -1,7 +1,7 @@
 
 
-from Events import Events
-from PhiTime import phiToSecond, secondToPhi
+from .Events import Events
+from .PhiTime import phiToSecond, secondToPhi
 
 class Line:
 

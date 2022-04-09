@@ -2,19 +2,19 @@ from bisect import bisect
 from PyQt5.QtGui import QImage, QTransform
 from PyQt5.QtCore import Qt
 
-from Line import Line
-from PhiTime import phiToSecond
-from HitAnimation import HitAnimation
+from PhiPlayer.Line import Line
+from PhiPlayer.PhiTime import phiToSecond
+from PhiPlayer.HitAnimation import HitAnimation
 
 
 class Note:
 
     texture_: list[QImage] = [
         None,
-        QImage("assets/tap.png").mirrored(False, True),
-        QImage("assets/drag.png").mirrored(False, True),
-        QImage("assets/hold.png").mirrored(False, True),
-        QImage("assets/flick.png").mirrored(False, True)
+        QImage("./assets/tap.png").mirrored(False, True),
+        QImage("./assets/drag.png").mirrored(False, True),
+        QImage("./assets/hold.png").mirrored(False, True),
+        QImage("./assets/flick.png").mirrored(False, True)
     ]
 
     def __init__(self, parent:Line,type, time, posX, holdTime, speed, floorPos) -> None:

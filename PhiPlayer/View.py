@@ -1,12 +1,12 @@
 from PyQt5.QtGui import QPainter, QImage, QColor, QPen, QBrush, QPalette
 from PyQt5.QtCore import QPointF, Qt, QRect, QPoint
-from Chart import Chart
-from Events import Events
-from HitAnimation import getHit
-from Notes import Note
-from PhiTime import phiToSecond, secondToPhi
-from Song import Song
-from Line import Line
+from .Chart import Chart
+from .Events import Events
+from .HitAnimation import getHit
+from .Notes import Note
+from .PhiTime import phiToSecond, secondToPhi
+from .Song import Song
+from .Line import Line
 
 class newPainter(QPainter):
     def __init__(self, *args):
@@ -75,7 +75,7 @@ class newPainter(QPainter):
     def drawJudgeLine(self, RTime, line: Line):
         time = secondToPhi(RTime, line.bpm)
         pen = QPen(QColor(171, 170, 103, int(255 * line.getAlphaAtTime(RTime))))
-        pen.setWidth(self.getHeightForPercent(0.01))
+        pen.setWidth(int(self.getHeightForPercent(0.01)))
         self.setPen(pen)
 
         with self.TranslationPhi(*line.getPosAtTime(RTime)), \
