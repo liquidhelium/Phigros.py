@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
 
+
         {
             "name": "Python: 当前文件",
             "type": "python",
@@ -16,7 +17,7 @@
             "name": "Python: 调试文件",
             "type": "python",
             "request": "launch",
-            "program": "player.py",
+            "program": "play.py",
             "console": "integratedTerminal"
         }
     ]

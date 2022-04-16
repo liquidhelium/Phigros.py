@@ -1,16 +1,16 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog,QWidget
-from .GUI_phi import Ui_PhiPlayer
+from .GUI_player import Ui_Player
 from .integrated import IntegratedPlayer
 
 
-class PhiPlayer(QMainWindow):
+class PhiPlayer(QWidget):
     def __init__(self, *args) -> None:
         super().__init__(*args)
-        self.ui = Ui_PhiPlayer()
+        self.ui = Ui_Player()
         self.ui.setupUi(self)
         
     def openFileToRead(self):
-        player = self.findChild(IntegratedPlayer,"player")
+        player = self.ui.player
         dialog = QFileDialog()
         filters = \
         [

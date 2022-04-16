@@ -1,2 +1,1 @@
-__package__ = "PhiPlayer"
-from PhiPlayer.Player import PhiPlayer 
+from .Player import PhiPlayer 

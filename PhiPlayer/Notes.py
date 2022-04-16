@@ -2,9 +2,9 @@ from bisect import bisect
 from PyQt5.QtGui import QImage, QTransform
 from PyQt5.QtCore import Qt
 
-from PhiPlayer.Line import Line
-from PhiPlayer.PhiTime import phiToSecond
-from PhiPlayer.HitAnimation import HitAnimation
+from .Line import Line
+from .PhiTime import phiToSecond
+from .HitAnimation import HitAnimation
 
 
 class Note:

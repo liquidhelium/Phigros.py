@@ -158,18 +158,23 @@ class newPainter(QPainter):
             
             if texture:
                 texture = texture.scaled(
-                    int(self.getWidthForPercent(0.15)), 
-                    int(self.getWidthForPercent(0.15)),
+                    int(self.getWidthForPercent(0.2)), 
+                    int(self.getWidthForPercent(0.2)),
                 )
                 
                 
                 self.drawImage(QPoint(hit.x-texture.width()//2,hit.y-texture.height()//2),texture)
             
-            particles = hit.genParticles()
+            particles: list[QPoint] = hit.genParticles(self.getWidthForPercent(0.2))
 
             if particles:
                 self.save()
-                self.pen().setWidth(20)
+                pen = self.pen()
+                pen.setWidth(self.getWidthForPercent(0.02))
+                color = pen.color()
+                color.setAlpha((1-hit.getPercent())*255)
+                pen.setColor(color)
+                self.setPen(pen)
                 for p in particles:
                     self.drawPoint(p)
                 self.restore()

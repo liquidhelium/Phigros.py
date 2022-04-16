@@ -1,9 +1,9 @@
-from Events import Event, Events
+from PhiPlayer.Events import Event, Events
 import profile
 import line_profiler
-from View import newPainter
-from Song import Song
-from officalChartLoader import officalChartLoader
+from PhiPlayer.View import newPainter
+from PhiPlayer.Song import Song
+from PhiPlayer.officalChartLoader import officalChartLoader
 from PyQt5.QtGui import QImage, QPixmap, QGuiApplication
 
 p = line_profiler.LineProfiler()
