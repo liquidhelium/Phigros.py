@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Player(object):
     def setupUi(self, Player):
         Player.setObjectName("Player")
-        Player.resize(972, 758)
+        Player.resize(972, 756)
         self.verticalLayout = QtWidgets.QVBoxLayout(Player)
         self.verticalLayout.setObjectName("verticalLayout")
         self.ratioKeeper = KeepRatioWidget(Player)
@@ -23,7 +23,7 @@ class Ui_Player(object):
         self.ratioKeeper.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.ratioKeeper.setFrameShadow(QtWidgets.QFrame.Raised)
         self.ratioKeeper.setObjectName("ratioKeeper")
-        self.player = IntegratedPlayer(self.ratioKeeper)
+        self.player = EditablePlayer(self.ratioKeeper)
         self.player.setGeometry(QtCore.QRect(0, 150, 951, 401))
         self.player.setStyleSheet("background:black")
         self.player.setObjectName("player")
@@ -123,15 +123,15 @@ class Ui_Player(object):
         self.retranslateUi(Player)
         self.start.pressed.connect(self.player.toggle)
         self.capture.pressed.connect(self.player.capture)
-        self.player.timeUpdate['int'].connect(self.startTime.setTime)
-        self.player.toogled.connect(self.start.toggleText)
+        self.seekBar.valueChanged['int'].connect(self.startTime.setTime)
         self.player.endTimeLoaded['int'].connect(self.endTime.setTime)
         self.player.rangeLoaded['int','int'].connect(self.seekBar.setRange)
         self.seekBar.sliderPressed.connect(self.player.pause)
         self.seekBar.sliderReleased.connect(self.player.start)
-        self.seekBar.valueChanged['int'].connect(self.player.seek)
+        self.seekBar.sliderMoved['int'].connect(self.player.seek)
         self.player.bePaused.connect(self.start.setPlay)
         self.player.bePlayed.connect(self.start.setPause)
+        self.player.timeUpdate['int'].connect(self.seekBar.setValue)
         QtCore.QMetaObject.connectSlotsByName(Player)
 
     def retranslateUi(self, Player):
@@ -140,7 +140,7 @@ class Ui_Player(object):
         self.player.setWhatsThis(_translate("Player", "The main player"))
         self.capture.setToolTip(_translate("Player", "停止"))
         self.start.setToolTip(_translate("Player", "播放"))
-from .integrated import IntegratedPlayer
+from .editablePlayer import EditablePlayer
 from .keepRatioWidget import KeepRatioWidget
 from .slider import SeekBar
 from .startButton import startButton

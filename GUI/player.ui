@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>972</width>
-    <height>758</height>
+    <height>756</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <widget class="IntegratedPlayer" name="player" native="true">
+     <widget class="EditablePlayer" name="player" native="true">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -287,9 +287,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>IntegratedPlayer</class>
+   <class>EditablePlayer</class>
    <extends>QWidget</extends>
-   <header>.integrated</header>
+   <header>.editablePlayer</header>
    <container>1</container>
    <slots>
     <signal>endTimeLoaded(int)</signal>
@@ -370,34 +370,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>player</sender>
-   <signal>timeUpdate(int)</signal>
+   <sender>seekBar</sender>
+   <signal>valueChanged(int)</signal>
    <receiver>startTime</receiver>
    <slot>setTime(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>132</x>
-     <y>500</y>
+     <x>485</x>
+     <y>667</y>
     </hint>
     <hint type="destinationlabel">
      <x>36</x>
      <y>660</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>player</sender>
-   <signal>toogled()</signal>
-   <receiver>start</receiver>
-   <slot>toggleText()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>550</x>
-     <y>476</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>516</x>
-     <y>712</y>
     </hint>
    </hints>
   </connection>
@@ -467,7 +451,7 @@
   </connection>
   <connection>
    <sender>seekBar</sender>
-   <signal>valueChanged(int)</signal>
+   <signal>sliderMoved(int)</signal>
    <receiver>player</receiver>
    <slot>seek(int)</slot>
    <hints>
@@ -510,6 +494,22 @@
     <hint type="destinationlabel">
      <x>511</x>
      <y>717</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>player</sender>
+   <signal>timeUpdate(int)</signal>
+   <receiver>seekBar</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>486</x>
+     <y>361</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>485</x>
+     <y>667</y>
     </hint>
    </hints>
   </connection>

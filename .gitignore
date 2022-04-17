@@ -3,8 +3,8 @@ __pycache__/
 captures/
 .vscode/settings.json
 .vsCodeCounter/
-player.build/
-player.dist/
+play.build/
+play.dist/
 release.7z
 player.cmd
 player.exe
