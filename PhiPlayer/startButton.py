@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QPushButton
 
+
 class startButton(QPushButton):
     def toggleText(self):
         if self.text() == "\ue037":
@@ -8,7 +9,7 @@ class startButton(QPushButton):
             self.setPause()
 
     def setPause(self):
-        self.setText("\ue034") # pause
-    
+        self.setText("\ue034")  # pause
+
     def setPlay(self):
-        self.setText("\ue037") # play_arrow
+        self.setText("\ue037")  # play_arrow

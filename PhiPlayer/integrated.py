@@ -14,16 +14,14 @@ from .Song import Song
 from .View import newPainter
 
 
-
 class IntegratedPlayer(QWidget):
 
     timeUpdate = pyqtSignal(int)
     rangeLoaded = pyqtSignal(int, int)
     endTimeLoaded = pyqtSignal(int)
-    toogled = pyqtSignal() 
+    toogled = pyqtSignal()
     bePaused = pyqtSignal()
     bePlayed = pyqtSignal()
-    
 
     def __init__(self, parent) -> None:
 
@@ -36,13 +34,13 @@ class IntegratedPlayer(QWidget):
         self.pausedAt = 0
         self.fps = 0
         self.fpstimer = self.startTimer(500)
-        self.objAndRects: list[tuple[QRect,Any]] = []
+        self.objAndRects: list[tuple[QRect, Any]] = []
         self.selectedObj: set[Note] = set()
         self.selectionBefore: set[Note] = set()
         self.timer: Union[int, None] = None
-        self.musicPlayer = QMediaPlayer(self)   
+        self.musicPlayer = QMediaPlayer(self)
         self.TRANSLATION = QTransform()
-        self.TRANSLATION.rotate(180,Qt.Axis.XAxis)
+        self.TRANSLATION.rotate(180, Qt.Axis.XAxis)
         self.mousePressedPos = None
         self.mousePressAndMovedPos = None
         self.ShiftPressed = False
@@ -51,12 +49,12 @@ class IntegratedPlayer(QWidget):
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         # self._debugRend = [] # DEBUG
         self.pause()
- 
 
     def start(self):
         if self.paused:
             # avoid duplicate defining
-            self.timer = self.startTimer(int(100/6)+1) if not self.timer else self.timer
+            self.timer = self.startTimer(
+                int(100/6)+1) if not self.timer else self.timer
             self.now = time.perf_counter()
             self.startTime = self.now-self.pausedAt
             self.musicPlayer.play()
@@ -89,7 +87,7 @@ class IntegratedPlayer(QWidget):
         self.pausedAt = time
         self.update()
         if self.musicPlayer.isSeekable():
-            self.musicPlayer.setPosition(int(time*2000)) # milisecond
+            self.musicPlayer.setPosition(int(time*2000))  # milisecond
         if not oldPaused:
             self.start()
 
@@ -103,7 +101,8 @@ class IntegratedPlayer(QWidget):
             painter = newPainter(self)
         else:
             painter = newPainter(device)
-        painter.setRenderHints(newPainter.RenderHint.SmoothPixmapTransform | newPainter.RenderHint.Antialiasing, True)
+        painter.setRenderHints(
+            newPainter.RenderHint.SmoothPixmapTransform | newPainter.RenderHint.Antialiasing, True)
         # painter.setBrush(QColor(0,0,0))
         # for i in self._debugRend: painter.drawRect(i)
         # painter.setBrush(QColor(0,0,0,0))
@@ -115,13 +114,14 @@ class IntegratedPlayer(QWidget):
         else:
             self.now = self.startTime+self.pausedAt
         painter.drawSong((self.now-self.startTime),
-                                self.song)
+                         self.song)
         if self.mousePressedPos and self.mousePressAndMovedPos and self.drawr:
-            painter.setBrush(QColor(86,114,240,160))
+            painter.setBrush(QColor(86, 114, 240, 160))
             painter.resetTransform()
-            painter.drawRect(QRect(self.mousePressedPos,self.mousePressAndMovedPos))
+            painter.drawRect(QRect(self.mousePressedPos,
+                             self.mousePressAndMovedPos))
         painter.drawStatus()
-        painter.drawText(10,40,str(self.fpsPrint))
+        painter.drawText(10, 40, str(self.fpsPrint))
         self.fps += 1
         painter.end()
 
@@ -129,8 +129,8 @@ class IntegratedPlayer(QWidget):
         oldSize = self.size()
         self.sizeVar = a0.size()
         self.TRANSLATION.reset()
-        self.TRANSLATION.rotate(180,Qt.Axis.XAxis)
-        self.TRANSLATION.translate(0,-self.size().height())
+        self.TRANSLATION.rotate(180, Qt.Axis.XAxis)
+        self.TRANSLATION.translate(0, -self.size().height())
         return super().resizeEvent(a0)
 
     def timerEvent(self, a0) -> None:
@@ -140,23 +140,23 @@ class IntegratedPlayer(QWidget):
             self.timeUpdate.emit(int(self.now-self.startTime))
         elif a0.timerId() == self.fpstimer:
             self.fpsPrint = self.fps*2
-            self.fps=0
+            self.fps = 0
         return super().timerEvent(a0)
-    
+
     def mousePressEvent(self, a0: QMouseEvent) -> None:
-        
+
         self.mousePressedPos = a0.pos()
-        self.selectionBefore =self.selectedObj.copy()
+        self.selectionBefore = self.selectedObj.copy()
         return super().mousePressEvent(a0)
-    
+
     def mouseMoveEvent(self, a0: QMouseEvent) -> None:
         self.mousePressAndMovedPos = a0.pos()
         if self.mousePressedPos and self.mousePressAndMovedPos:
-            
+
             for rect, obj in self.objAndRects:
                 # self._debugRend.append(rect) #DEBUG
                 # if rect.intersected(QRect(self.mousePressedPos,self.mousePressAndMovedPos)).contains(rect): # 全部进入才算选择
-                if rect.intersects(QRect(self.mousePressedPos,self.mousePressAndMovedPos)): # 有交集就算选择
+                if rect.intersects(QRect(self.mousePressedPos, self.mousePressAndMovedPos)):  # 有交集就算选择
                     if self.ShiftPressed and (obj in self.selectionBefore):
                         if obj in self.selectedObj:
                             self.selectedObj.remove(obj)
@@ -172,14 +172,14 @@ class IntegratedPlayer(QWidget):
             self.update()
         # self.update()
         return super().mouseMoveEvent(a0)
-    
+
     def mouseReleaseEvent(self, a0: QMouseEvent) -> None:
         self.mousePressedPos = None
         self.mousePressAndMovedPos = None
         self.selectionBefore = self.selectedObj.copy()
         self.update()
         return super().mouseReleaseEvent(a0)
-    
+
     def keyPressEvent(self, a0: QKeyEvent) -> None:
         if a0.key() == Qt.Key.Key_Shift:
             self.ShiftPressed = True
@@ -194,7 +194,7 @@ class IntegratedPlayer(QWidget):
         if illustrationAddr or musicAddr:
             try:
                 self.music = QMediaContent(QUrl(musicAddr))
-                
+
             except FileNotFoundError:
                 warn("Open music failed!")
                 self.music = None
@@ -210,8 +210,8 @@ class IntegratedPlayer(QWidget):
             self.chart = officalChartLoader(f)
             f.close()
         self.song = Song(
-                self.chart,
-                self.illustration
+            self.chart,
+            self.illustration
         )
         self.startTime = time.perf_counter()
         self.now = self.startTime
@@ -224,19 +224,19 @@ class IntegratedPlayer(QWidget):
             self.musicPlayer.positionChanged.connect(self._positionReciver)
             # self.endTimeLoaded.emit(int(self.musicPlayer.duration()/1000))
 
-    def _durationReciver(self,du):
+    def _durationReciver(self, du):
         self.endTimeLoaded.emit(int(du/2000))
-        self.rangeLoaded.emit(0,int(du/2000))
-    
+        self.rangeLoaded.emit(0, int(du/2000))
+
     def _positionReciver(self, pos):
         if pos >= self.musicPlayer.duration():
             self.pause()
-    
-    def _syncSong(self,nowTime):
+
+    def _syncSong(self, nowTime):
         if abs(self.musicPlayer.position() - nowTime) >= 50:
             self.musicPlayer.setPosition(nowTime)
             print(abs(self.musicPlayer.position() - nowTime))
-        
+
 
 if __name__ == "__main__":
     app = QApplication([])

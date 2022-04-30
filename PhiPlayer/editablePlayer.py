@@ -3,6 +3,7 @@ from PyQt5.QtGui import QKeyEvent
 from PyQt5.QtCore import Qt
 from .Tools import Tool, selectTool, moveTool
 
+
 class EditablePlayer(IntegratedPlayer):
     def __init__(self, *args) -> None:
         super().__init__(*args)
@@ -11,10 +12,8 @@ class EditablePlayer(IntegratedPlayer):
     def mousePressEvent(self, a0) -> None:
         return self.tool.mousePress(a0, self)
 
-
     def mouseMoveEvent(self, a0) -> None:
         return self.tool.mouseMove(a0, self)
-
 
     def mouseReleaseEvent(self, a0) -> None:
         return self.tool.mouseRelease(a0, self)
@@ -26,4 +25,3 @@ class EditablePlayer(IntegratedPlayer):
             self.tool = moveTool
         else:
             super().keyPressEvent(a0)
-

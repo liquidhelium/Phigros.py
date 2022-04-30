@@ -50,8 +50,10 @@ def makeLine(obj):
                 makeOneNumEvents(obj["judgeLineDisappearEvents"]),
                 makeEvents(obj["judgeLineMoveEvents"]),
                 makeOneNumEvents(obj["judgeLineRotateEvents"]))
-    line.notesAbove = Notes(line, [makeNote(note, line) for note in obj["notesAbove"]])
-    line.notesBelow = Notes(line, [makeNote(note, line) for note in obj["notesBelow"]])
+    line.notesAbove = Notes(line, [makeNote(note, line)
+                            for note in obj["notesAbove"]])
+    line.notesBelow = Notes(line, [makeNote(note, line)
+                            for note in obj["notesBelow"]])
     return line
 
 
@@ -61,9 +63,10 @@ def officalChartLoader(file: TextIOWrapper):
     offset = filejson['offset']
     notesCount = filejson['numOfNotes']
     lines = [makeLine(line) for line in filejson["judgeLineList"]]
-    chart =  Chart(ver, offset, notesCount, lines)
+    chart = Chart(ver, offset, notesCount, lines)
     optimize(chart)
     return chart
+
 
 def optimize(chart):
     lines = chart.lines

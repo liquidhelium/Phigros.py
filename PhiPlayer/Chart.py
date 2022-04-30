@@ -8,5 +8,3 @@ class Chart:
         self.offset = offset
         self.notesCount = notesCount
         self.lines = lines
-
-    

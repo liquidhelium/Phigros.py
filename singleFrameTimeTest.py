@@ -8,9 +8,11 @@ from PhiPlayer.officalChartLoader import officalChartLoader
 from PyQt5.QtGui import QImage, QPixmap, QGuiApplication
 
 p = line_profiler.LineProfiler()
+
+
 def preWork():
-    chartAddr="assets/Chart_IN_Error"
-    illustrationAddr="./assets/IllustrationBlur.png"
+    chartAddr = "assets/Chart_IN_Error"
+    illustrationAddr = "./assets/IllustrationBlur.png"
     illustration = QPixmap(illustrationAddr)
     f = open(chartAddr)
     chart = officalChartLoader(f)
@@ -21,11 +23,11 @@ def preWork():
         illustration
     )
     global picmap
-    picmap = QPixmap(1920,1080)
+    picmap = QPixmap(1920, 1080)
     picmap.selectedObj = []
     picmap.objAndRects = None
     global time
-    time = 90.0 # s
+    time = 90.0  # s
     import PhiPlayer.HitAnimation
     PhiPlayer.HitAnimation.init()
 
@@ -39,6 +41,7 @@ def render():
     painter.setWindow(0, picmap.height(), picmap.width(), -picmap.height())
     painter.drawSong(time, song)
     painter.end()
+
 
 # if __name__ == "__main__":
 app = QGuiApplication([])
