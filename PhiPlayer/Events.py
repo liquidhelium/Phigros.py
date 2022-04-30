@@ -73,3 +73,6 @@ class Events(list[Event]):
         # break
         self.cache = bisect(self, Event(time, time))-1
         return self[self.cache].get(time)
+
+    def getNoCache(self, time):
+        return self[bisect(self, Event(time, time))-1].get(time)

@@ -35,6 +35,15 @@ class PhiPlayer(QWidget):
 
     def setRatio(self, a0:int, a1:int):
         self.ui.ratioKeeper.setRatio(a0,a1)
+    
+    def pause(self):
+        self.ui.player.pause()
+    
+    def play(self):
+        self.ui.player.start()
+
+    def toogle(self):
+        self.ui.player.toggle()
             
             
 

@@ -1,13 +1,17 @@
-from PyQt5.QtGui import QImage, QColor
+from PyQt5.QtGui import QPixmap, QColor,QTransform
+from PyQt5.QtCore import Qt
 from .Chart import Chart
 
 class Song:
-    cover = QImage(500, 500, QImage.Format(QImage.Format.Format_ARGB32))
-    cover.fill(QColor(0,0,0,128))
-    def __init__(self, chart: Chart, illustration: QImage = None):
+    
+    def __init__(self, chart: Chart, illustration: QPixmap = None):
+        trans = QTransform()
+        trans.rotate(180,Qt.Axis.XAxis)
+        self.cover = QPixmap(50,50)
+        self.cover.fill(QColor(0,0,0,128))
         self.coverCacheRes = (0,0)
         self.coverCache = None
         self.chart=chart
-        self.illustration=illustration.mirrored(False,True)
+        self.illustration=illustration.transformed(trans)
         self.illustrationCache = None
         self.illustrationCacheRes = (0,0)

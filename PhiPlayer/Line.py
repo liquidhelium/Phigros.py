@@ -1,5 +1,3 @@
-
-
 from .Events import Events
 from .PhiTime import phiToSecond, secondToPhi
 

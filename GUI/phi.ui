@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>lqhe</author>
- <class>PhiPlayer</class>
- <widget class="QMainWindow" name="PhiPlayer">
+ <class>win</class>
+ <widget class="QMainWindow" name="win">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -46,6 +46,9 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
+    <item>
+     <widget class="PhiPlayer" name="player" native="true"/>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -92,12 +95,24 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PhiPlayer</class>
+   <extends>QWidget</extends>
+   <header>.Player</header>
+   <container>1</container>
+   <slots>
+    <slot>toogle()</slot>
+    <slot>openFileToRead()</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
    <sender>actionOpen</sender>
    <signal>triggered()</signal>
-   <receiver>PhiPlayer</receiver>
+   <receiver>player</receiver>
    <slot>openFileToRead()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -106,7 +121,23 @@
     </hint>
     <hint type="destinationlabel">
      <x>485</x>
-     <y>416</y>
+     <y>439</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionPlayPause</sender>
+   <signal>triggered()</signal>
+   <receiver>player</receiver>
+   <slot>toogle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>485</x>
+     <y>439</y>
     </hint>
    </hints>
   </connection>

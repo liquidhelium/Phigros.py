@@ -28,12 +28,14 @@ class IntegratedPlayer(QWidget):
     def __init__(self, parent) -> None:
 
         super().__init__(parent)
+        from .HitAnimation import init
+        init()
         self.startTime = time.perf_counter()
         self.now = self.startTime
         self.paused = False
         self.pausedAt = 0
         self.fps = 0
-        self.fpstimer = self.startTimer(1000)
+        self.fpstimer = self.startTimer(500)
         self.objAndRects: list[tuple[QRect,Any]] = []
         self.selectedObj: set[Note] = set()
         self.selectionBefore: set[Note] = set()
@@ -44,6 +46,8 @@ class IntegratedPlayer(QWidget):
         self.mousePressedPos = None
         self.mousePressAndMovedPos = None
         self.ShiftPressed = False
+        self.drawr = True
+        self.fpsPrint = 0
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         # self._debugRend = [] # DEBUG
         self.pause()
@@ -52,7 +56,7 @@ class IntegratedPlayer(QWidget):
     def start(self):
         if self.paused:
             # avoid duplicate defining
-            self.timer = self.startTimer(6) if not self.timer else self.timer
+            self.timer = self.startTimer(int(100/6)+1) if not self.timer else self.timer
             self.now = time.perf_counter()
             self.startTime = self.now-self.pausedAt
             self.musicPlayer.play()
@@ -99,6 +103,7 @@ class IntegratedPlayer(QWidget):
             painter = newPainter(self)
         else:
             painter = newPainter(device)
+        painter.setRenderHints(newPainter.RenderHint.SmoothPixmapTransform | newPainter.RenderHint.Antialiasing, True)
         # painter.setBrush(QColor(0,0,0))
         # for i in self._debugRend: painter.drawRect(i)
         # painter.setBrush(QColor(0,0,0,0))
@@ -111,16 +116,18 @@ class IntegratedPlayer(QWidget):
             self.now = self.startTime+self.pausedAt
         painter.drawSong((self.now-self.startTime),
                                 self.song)
-        if self.mousePressedPos and self.mousePressAndMovedPos:
+        if self.mousePressedPos and self.mousePressAndMovedPos and self.drawr:
             painter.setBrush(QColor(86,114,240,160))
             painter.resetTransform()
             painter.drawRect(QRect(self.mousePressedPos,self.mousePressAndMovedPos))
+        painter.drawStatus()
+        painter.drawText(10,40,str(self.fpsPrint))
         self.fps += 1
         painter.end()
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
         oldSize = self.size()
-        # self.size = a0.size()
+        self.sizeVar = a0.size()
         self.TRANSLATION.reset()
         self.TRANSLATION.rotate(180,Qt.Axis.XAxis)
         self.TRANSLATION.translate(0,-self.size().height())
@@ -132,7 +139,7 @@ class IntegratedPlayer(QWidget):
             # self.paintEvent()
             self.timeUpdate.emit(int(self.now-self.startTime))
         elif a0.timerId() == self.fpstimer:
-            print(self.fps)
+            self.fpsPrint = self.fps*2
             self.fps=0
         return super().timerEvent(a0)
     
@@ -192,7 +199,7 @@ class IntegratedPlayer(QWidget):
                 warn("Open music failed!")
                 self.music = None
             try:
-                self.illustration = QImage(illustrationAddr)
+                self.illustration = QPixmap(illustrationAddr)
             except FileNotFoundError:
                 warn("Open illustration failed")
         else:
@@ -248,6 +255,3 @@ if __name__ == "__main__":
     player.start()
     win.show()
     app.exec()
-    # Timer(5,player.pause).start()
-    # Timer(10,player.start).start()
-    # pyglet.app.run()

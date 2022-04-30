@@ -1,5 +1,5 @@
 from bisect import bisect
-from PyQt5.QtGui import QImage, QTransform
+from PyQt5.QtGui import QPixmap, QTransform
 from PyQt5.QtCore import Qt
 
 from .Line import Line
@@ -9,25 +9,29 @@ from .HitAnimation import HitAnimation
 
 class Note:
 
-    texture_: list[QImage] = [
-        None,
-        QImage("./assets/tap.png").mirrored(False, True),
-        QImage("./assets/drag.png").mirrored(False, True),
-        QImage("./assets/hold.png").mirrored(False, True),
-        QImage("./assets/flick.png").mirrored(False, True)
-    ]
+    
 
     def __init__(self, parent:Line,type, time, posX, holdTime, speed, floorPos) -> None:
+        trans = QTransform()
+        trans.rotate(180,Qt.Axis.XAxis)
+        self.texture_: list[QPixmap] = [
+            None,
+            QPixmap("./assets/tap.png").transformed(trans),
+            QPixmap("./assets/drag.png").transformed(trans),
+            QPixmap("./assets/hold.png").transformed(trans),
+            QPixmap("./assets/flick.png").transformed(trans)
+        ]
         self.parent = parent
         self.textureCache = None
         self.textureCacheRes = (0,0)
         self.type = type
-        self.time = time
+        self.time = float(time)
         self.posX = posX
         self.holdTime = holdTime
         self.speed = speed
         self.floorPos = floorPos
         self.hitAnimations: list[HitAnimation] = []
+        self.hitRes = (0,0)
 
     def optmize(self, speedEv, bpm):
         self.FloorY = self.getFloorY()
@@ -36,13 +40,25 @@ class Note:
             spEvTail = speedEv.get(self.time+self.holdTime)
             self.tailY = phiToSecond(self.holdTime, bpm) * spEvTail[1]
 
-    def genHit(self, realX, realY, lineX, lineY):
-        
-        ang = self.parent.getAngleAtTime(phiToSecond(self.time,self.parent.bpm))
-        trans =  QTransform()
-        trans.translate(lineX,lineY)
-        trans.rotate(ang, Qt.Axis.ZAxis)
-        self.hitAnimations.append(HitAnimation(phiToSecond(self.time,self.parent.bpm),*trans.map(realX,realY)))
+    def genHit(self):
+        if not self.type == 3:
+            self.hitAnimations = []
+            ang = self.parent.rotateEvents.getNoCache(self.time)
+            pos = self.parent.moveEvents.getNoCache(self.time+1.0)
+            trans =  QTransform()
+            trans.translate(pos[0],pos[1])
+            trans.rotate(ang, Qt.Axis.ZAxis)
+            self.hitAnimations=[HitAnimation(phiToSecond(self.time,self.parent.bpm),*trans.map(self.FloorX,0))]
+        else:
+            self.hitAnimations = []
+            for time in range(int(self.time),int(self.time+self.holdTime), 16):
+                ang = self.parent.rotateEvents.getNoCache(time)
+                pos = self.parent.moveEvents.getNoCache(time+1.0)
+                trans =  QTransform()
+                trans.translate(pos[0],pos[1])
+                trans.rotate(ang, Qt.Axis.ZAxis)
+                self.hitAnimations.append(HitAnimation(phiToSecond(time,self.parent.bpm),*trans.map(self.FloorX,0)))
+
     def getFloorY(self):
         return self.floorPos 
 
@@ -50,9 +66,9 @@ class Note:
         return (self.posX) / 18
 
 
-    def getAnchor(self, img: QImage):
+    def getAnchor(self, img: QPixmap) -> tuple[float,float]:
         if self.type == 3:
-            return img.width()/2, 5
+            return img.width()/2, 5.0
         else:
             return img.width()/2, img.height()/2
         

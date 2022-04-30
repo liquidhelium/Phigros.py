@@ -11,17 +11,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_PhiPlayer(object):
-    def setupUi(self, PhiPlayer):
-        PhiPlayer.setObjectName("PhiPlayer")
-        PhiPlayer.resize(971, 833)
+class Ui_win(object):
+    def setupUi(self, win):
+        win.setObjectName("win")
+        win.resize(971, 833)
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
-        PhiPlayer.setFont(font)
+        win.setFont(font)
         icon = QtGui.QIcon.fromTheme("Fusion")
-        PhiPlayer.setWindowIcon(icon)
-        PhiPlayer.setTabShape(QtWidgets.QTabWidget.Rounded)
-        self.main = QtWidgets.QWidget(PhiPlayer)
+        win.setWindowIcon(icon)
+        win.setTabShape(QtWidgets.QTabWidget.Rounded)
+        self.main = QtWidgets.QWidget(win)
         self.main.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -33,16 +33,19 @@ class Ui_PhiPlayer(object):
         self.verticalLayout.setContentsMargins(-1, 20, -1, 0)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
-        PhiPlayer.setCentralWidget(self.main)
-        self.menubar = QtWidgets.QMenuBar(PhiPlayer)
+        self.player = PhiPlayer(self.main)
+        self.player.setObjectName("player")
+        self.verticalLayout.addWidget(self.player)
+        win.setCentralWidget(self.main)
+        self.menubar = QtWidgets.QMenuBar(win)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 971, 26))
         self.menubar.setObjectName("menubar")
         self.menu = QtWidgets.QMenu(self.menubar)
         self.menu.setObjectName("menu")
-        PhiPlayer.setMenuBar(self.menubar)
-        self.actionOpen = QtWidgets.QAction(PhiPlayer)
+        win.setMenuBar(self.menubar)
+        self.actionOpen = QtWidgets.QAction(win)
         self.actionOpen.setObjectName("actionOpen")
-        self.actionPlayPause = QtWidgets.QAction(PhiPlayer)
+        self.actionPlayPause = QtWidgets.QAction(win)
         self.actionPlayPause.setVisible(True)
         self.actionPlayPause.setIconVisibleInMenu(True)
         self.actionPlayPause.setShortcutVisibleInContextMenu(True)
@@ -51,15 +54,17 @@ class Ui_PhiPlayer(object):
         self.menu.addAction(self.actionPlayPause)
         self.menubar.addAction(self.menu.menuAction())
 
-        self.retranslateUi(PhiPlayer)
-        self.actionOpen.triggered.connect(PhiPlayer.openFileToRead)
-        QtCore.QMetaObject.connectSlotsByName(PhiPlayer)
+        self.retranslateUi(win)
+        self.actionOpen.triggered.connect(self.player.openFileToRead)
+        self.actionPlayPause.triggered.connect(self.player.toogle)
+        QtCore.QMetaObject.connectSlotsByName(win)
 
-    def retranslateUi(self, PhiPlayer):
+    def retranslateUi(self, win):
         _translate = QtCore.QCoreApplication.translate
-        PhiPlayer.setWindowTitle(_translate("PhiPlayer", "Phigros player"))
-        self.menu.setTitle(_translate("PhiPlayer", "文件(&F)"))
-        self.actionOpen.setText(_translate("PhiPlayer", "打开(&O)"))
-        self.actionOpen.setShortcut(_translate("PhiPlayer", "Ctrl+O"))
-        self.actionPlayPause.setText(_translate("PhiPlayer", "开始/暂停"))
-        self.actionPlayPause.setShortcut(_translate("PhiPlayer", "Space"))
+        win.setWindowTitle(_translate("win", "Phigros player"))
+        self.menu.setTitle(_translate("win", "文件(&F)"))
+        self.actionOpen.setText(_translate("win", "打开(&O)"))
+        self.actionOpen.setShortcut(_translate("win", "Ctrl+O"))
+        self.actionPlayPause.setText(_translate("win", "开始/暂停"))
+        self.actionPlayPause.setShortcut(_translate("win", "Space"))
+from .Player import PhiPlayer

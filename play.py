@@ -1,18 +1,19 @@
-from PhiPlayer.Player import PhiPlayer
+# import pyjion;
+# pyjion.enable()
+# pyjion.config(pgc=True,level=1)
+from PhiPlayer.GUI_phi import Ui_win
 from PyQt5.QtWidgets import QApplication,QMainWindow
 
 if __name__ == "__main__":
     app = QApplication([])
-    window = PhiPlayer()
-    window.loadSong(
+    window = QMainWindow()
+    ui = Ui_win()
+    ui.setupUi(window)
+    ui.player.loadSong(
         chartAddr="./assets/Introduction_Chart.json",
         musicAddr="./assets/Introduction.mp3",
         illustrationAddr="./assets/IllustrationBlur.png",
         )
-    window.setRatio(16,9)
-    window1 = QMainWindow()
-    window1.setGeometry(0,0,800,600)
-    window.setParent(window1)
-    window1.setCentralWidget(window)
-    window1.show()
+    ui.player.setRatio(16,9)
+    window.show()
     app.exec()

@@ -1,5 +1,7 @@
 from .integrated import IntegratedPlayer
-from .Tools import Tool, selectTool
+from PyQt5.QtGui import QKeyEvent
+from PyQt5.QtCore import Qt
+from .Tools import Tool, selectTool, moveTool
 
 class EditablePlayer(IntegratedPlayer):
     def __init__(self, *args) -> None:
@@ -16,4 +18,12 @@ class EditablePlayer(IntegratedPlayer):
 
     def mouseReleaseEvent(self, a0) -> None:
         return self.tool.mouseRelease(a0, self)
+
+    def keyPressEvent(self, a0: QKeyEvent) -> None:
+        if a0.key() == Qt.Key.Key_S:
+            self.tool = selectTool
+        elif a0.key() == Qt.Key.Key_M:
+            self.tool = moveTool
+        else:
+            super().keyPressEvent(a0)
 
