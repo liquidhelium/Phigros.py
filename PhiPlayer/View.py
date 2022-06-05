@@ -128,7 +128,7 @@ class newPainter(QPainter):
     def drawNote(self, time, note: Note):
         # we assume that the coordinate is translated.
         x = self.getWidthForPercent(note.FloorX)
-        yline = note.parent.getFloorAtTime(time)
+        yline = note.parent.getFloorAtTime2(time)
         if not (note.textureCacheRes == self.device().size() and note.textureCache):
             if note.type == 3:
                 texture = note.texture_[3].scaled(

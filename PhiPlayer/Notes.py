@@ -9,7 +9,7 @@ from .HitAnimation import HitAnimation
 
 class Note:
 
-    def __init__(self, parent: Line, type, time, posX, holdTime, speed, floorPos) -> None:
+    def __init__(self, parent: Line, type:int, time, posX, holdTime, speed, floorPos) -> None:
         trans = QTransform()
         trans.rotate(180, Qt.Axis.XAxis)
         self.texture_: list[QPixmap] = [
@@ -37,6 +37,12 @@ class Note:
         if self.type == 3:
             spEvTail = speedEv.get(self.time+self.holdTime)
             self.tailY = phiToSecond(self.holdTime, bpm) * spEvTail[1]
+    
+    def getTailY(self):
+        speedEv = self.parent.speedEvents
+        bpm = self.parent.bpm
+        spEvTail = speedEv.get(self.time+self.holdTime)
+        return phiToSecond(self.holdTime, bpm) * spEvTail[1]
 
     def genHit(self):
         if not self.type == 3:
@@ -91,7 +97,7 @@ class Notes(list[Note]):
         super().__init__(*arg)
 
     def getNearNotes(self, time):
-        yline = self.parent.getFloorAtTime(time)
+        yline = self.parent.getFloorAtTime2(time)
         max = bisect(self, yline + 5)
         min = bisect(self, yline - 5)
         return self[min:max]
