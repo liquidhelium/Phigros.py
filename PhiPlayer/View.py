@@ -1,4 +1,5 @@
-from PyQt5.QtGui import QPainter, QColor, QPen, QBrush, QFont, QFontMetricsF, QPixmap
+from email.charset import QP
+from PyQt5.QtGui import QPainter, QColor, QPen, QBrush, QFont, QFontMetricsF, QPixmap, QTransform
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsPixmapItem, QGraphicsBlurEffect
 from PyQt5.QtCore import QPointF, Qt, QRect, QPoint, QRectF
 from .Chart import Chart
@@ -212,3 +213,15 @@ class newPainter(QPainter):
                         p[0]), self.getHeightForPercent(p[1])))
                 self.restore()
             # self.drawEllipse(QPoint(hit.x,hit.y),500,500)
+
+def mapTo(line: Line,p: QPointF, RTime,w,h):
+    trans = _getTranslationForLine(line,RTime,w,h)
+    return trans.map(p)
+
+def _getTranslationForLine(line:Line, RTime,w,h):
+    trans = QTransform()
+    x,y = line.getPosAtTime(RTime)
+    trans = trans.translate(x*w,y*h)
+    trans = trans.rotate(line.getAngleAtTime(RTime))
+    return trans
+

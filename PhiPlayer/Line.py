@@ -34,3 +34,11 @@ class Line:
         yline = spEvNow[0] + \
             phiToSecond(time - spEvNow[2], self.bpm) * spEvNow[1]
         return yline
+
+    def getTimeForFloor(self, floor:float)-> float:
+        spEv = self.speedEvents.bisectForFloor(floor)
+        if spEv.value == 0: # avoid zero division
+            return spEv.startTime
+        else:
+            second =  (floor - spEv.floorPos) / spEv.value
+            return secondToPhi(second, self.bpm) + spEv.startTime

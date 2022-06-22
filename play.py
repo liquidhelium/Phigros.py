@@ -10,7 +10,7 @@ if __name__ == "__main__":
     ui = Ui_win()
     ui.setupUi(window)
     ui.player.loadSong(
-        chartAddr="./assets/Introduction_Chart.json",
+        chartAddr="./assets/Introduction_chart.json",
         musicAddr="./assets/Introduction.mp3",
         illustrationAddr="./assets/IllustrationBlur.png",
     )

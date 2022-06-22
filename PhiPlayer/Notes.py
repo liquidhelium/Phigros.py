@@ -9,7 +9,7 @@ from .HitAnimation import HitAnimation
 
 class Note:
 
-    def __init__(self, parent: Line, type, time, posX, holdTime, speed, floorPos) -> None:
+    def __init__(self, parent: Line, type, time, posX, holdTime, speed, floorPos, isBelow = False) -> None:
         trans = QTransform()
         trans.rotate(180, Qt.Axis.XAxis)
         self.texture_: list[QPixmap] = [
@@ -30,6 +30,7 @@ class Note:
         self.floorPos = floorPos
         self.hitAnimations: list[HitAnimation] = []
         self.hitRes = (0, 0)
+        self.isBelow = isBelow
 
     def optmize(self, speedEv, bpm):
         self.FloorY = self.getFloorY()
@@ -82,7 +83,39 @@ class Note:
             return self.floorPos > other
         except NotImplementedError:
             return self.floorPos > other.floorPos
-
+    
+    def __getstate__(self):
+        # for pickle.
+        state = self.__dict__.copy()
+        unWant = [
+            "texture_",
+            # "parent",
+            "textureCache",
+            "textureCacheRes",
+            "hitAnimations",
+            "hitRes"
+        ]
+        for key in unWant:
+            del state[key]
+        return state
+    
+    def __setstate__(self,state:dict):
+        trans = QTransform()
+        trans.rotate(180, Qt.Axis.XAxis)
+        self.texture_: list[QPixmap] = [
+            None,
+            QPixmap("./assets/tap.png").transformed(trans),
+            QPixmap("./assets/drag.png").transformed(trans),
+            QPixmap("./assets/hold.png").transformed(trans),
+            QPixmap("./assets/flick.png").transformed(trans)
+        ]
+        self.textureCache = None
+        self.textureCacheRes = (0, 0)
+        
+        self.hitAnimations: list[HitAnimation] = []
+        self.hitRes = (0, 0)
+        for key, value in state.items():
+            self.__setattr__(key,value)
 
 class Notes(list[Note]):
 
@@ -95,3 +128,8 @@ class Notes(list[Note]):
         max = bisect(self, yline + 5)
         min = bisect(self, yline - 5)
         return self[min:max]
+    
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        # del state["parent"]
+        return state

@@ -6,282 +6,388 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>972</width>
+    <width>1018</width>
     <height>756</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout_5">
    <item>
-    <widget class="KeepRatioWidget" name="ratioKeeper">
-     <property name="autoFillBackground">
-      <bool>false</bool>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background: grey</string>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <widget class="EditablePlayer" name="player" native="true">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>150</y>
-        <width>951</width>
-        <height>401</height>
-       </rect>
-      </property>
-      <property name="whatsThis">
-       <string>The main player</string>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background:black</string>
-      </property>
-     </widget>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="seekBarArea" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>24</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>24</height>
-      </size>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetMinimumSize</enum>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="TimeLableWidget" name="startTime">
-        <property name="minimumSize">
-         <size>
-          <width>50</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Microsoft YaHei UI</family>
-         </font>
-        </property>
-        <property name="text">
-         <string notr="true">00:00</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="buddy">
-         <cstring>seekBar</cstring>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="SeekBar" name="seekBar">
-        <property name="minimum">
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <item>
+      <widget class="QWidget" name="playerArea" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="KeepRatioWidget" name="ratioKeeper">
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background: grey</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <widget class="EditablePlayer" name="player" native="true">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>150</y>
+             <width>951</width>
+             <height>401</height>
+            </rect>
+           </property>
+           <property name="whatsThis">
+            <string>The main player</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background:black</string>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="seekBarArea" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>24</height>
+           </size>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMinimumSize</enum>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="TimeLableWidget" name="startTime">
+             <property name="minimumSize">
+              <size>
+               <width>50</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>50</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Microsoft YaHei UI</family>
+              </font>
+             </property>
+             <property name="text">
+              <string notr="true">00:00</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="buddy">
+              <cstring>seekBar</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="SeekBar" name="seekBar">
+             <property name="minimum">
+              <number>0</number>
+             </property>
+             <property name="maximum">
+              <number>150</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="TimeLableWidget" name="endTime">
+             <property name="minimumSize">
+              <size>
+               <width>50</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>50</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Microsoft YaHei UI</family>
+              </font>
+             </property>
+             <property name="text">
+              <string notr="true">xx:xx</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="buddy">
+              <cstring>seekBar</cstring>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="controlAreaOut" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>60</height>
+           </size>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <spacer name="lSpace">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>10</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+            <widget class="QWidget" name="controlArea" native="true">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="font">
+              <font>
+               <family>Microsoft YaHei UI</family>
+               <kerning>true</kerning>
+              </font>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <property name="spacing">
+               <number>1</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="capture">
+                <property name="minimumSize">
+                 <size>
+                  <width>40</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>40</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>Material Icons</family>
+                  <pointsize>18</pointsize>
+                  <kerning>true</kerning>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>停止</string>
+                </property>
+                <property name="text">
+                 <string notr="true"></string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="startButton" name="start">
+                <property name="minimumSize">
+                 <size>
+                  <width>40</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>40</width>
+                  <height>35</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>Material Icons</family>
+                  <pointsize>25</pointsize>
+                  <kerning>false</kerning>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>播放</string>
+                </property>
+                <property name="text">
+                 <string notr="true"></string>
+                </property>
+                <property name="default">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+             <zorder>start</zorder>
+             <zorder>capture</zorder>
+            </widget>
+           </item>
+           <item>
+            <spacer name="RSpace">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>10</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="widget" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="leftMargin">
          <number>0</number>
         </property>
-        <property name="maximum">
-         <number>150</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="TimeLableWidget" name="endTime">
-        <property name="minimumSize">
-         <size>
-          <width>50</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Microsoft YaHei UI</family>
-         </font>
-        </property>
-        <property name="text">
-         <string notr="true">xx:xx</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="buddy">
-         <cstring>seekBar</cstring>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="controlAreaOut" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>60</height>
-      </size>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <spacer name="lSpace">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>10</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-       <widget class="QWidget" name="controlArea" native="true">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="font">
-         <font>
-          <family>Microsoft YaHei UI</family>
-          <kerning>true</kerning>
-         </font>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <property name="spacing">
-          <number>1</number>
-         </property>
-         <item>
-          <widget class="QPushButton" name="capture">
-           <property name="minimumSize">
-            <size>
-             <width>40</width>
-             <height>35</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>40</width>
-             <height>35</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Material Icons</family>
-             <pointsize>18</pointsize>
-             <kerning>true</kerning>
-            </font>
-           </property>
-           <property name="toolTip">
-            <string>停止</string>
-           </property>
-           <property name="text">
-            <string notr="true"></string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="startButton" name="start">
-           <property name="minimumSize">
-            <size>
-             <width>40</width>
-             <height>35</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>40</width>
-             <height>35</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Material Icons</family>
-             <pointsize>25</pointsize>
-             <kerning>false</kerning>
-            </font>
-           </property>
-           <property name="toolTip">
-            <string>播放</string>
-           </property>
-           <property name="text">
-            <string notr="true"></string>
-           </property>
-           <property name="default">
-            <bool>false</bool>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-        <zorder>start</zorder>
-        <zorder>capture</zorder>
-       </widget>
-      </item>
-      <item>
-       <spacer name="RSpace">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>10</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </widget>
+        <item>
+         <widget class="QWidget" name="widget_2" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="font">
+              <font>
+               <family>Microsoft JhengHei UI</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>Snip</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="doubleSpinBox">
+             <property name="font">
+              <font>
+               <family>Microsoft JhengHei</family>
+               <pointsize>9</pointsize>
+               <strikeout>false</strikeout>
+              </font>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
+             <property name="specialValueText">
+              <string/>
+             </property>
+             <property name="accelerated">
+              <bool>false</bool>
+             </property>
+             <property name="prefix">
+              <string/>
+             </property>
+             <property name="suffix">
+              <string/>
+             </property>
+             <property name="decimals">
+              <number>3</number>
+             </property>
+             <property name="minimum">
+              <double>0.001000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.100000000000000</double>
+             </property>
+             <property name="stepType">
+              <enum>QAbstractSpinBox::DefaultStepType</enum>
+             </property>
+             <property name="value">
+              <double>0.100000000000000</double>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton">
+          <property name="font">
+           <font>
+            <family>Microsoft JhengHei</family>
+           </font>
+          </property>
+          <property name="text">
+           <string>Save it!</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -303,6 +409,8 @@
     <slot>pause()</slot>
     <slot>capture()</slot>
     <slot>toggle()</slot>
+    <slot>setSnip(double)</slot>
+    <slot>saveChart()</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -344,8 +452,8 @@
    <slot>toggle()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>504</x>
-     <y>708</y>
+     <x>473</x>
+     <y>719</y>
     </hint>
     <hint type="destinationlabel">
      <x>505</x>
@@ -354,34 +462,82 @@
    </hints>
   </connection>
   <connection>
-   <sender>capture</sender>
-   <signal>pressed()</signal>
+   <sender>seekBar</sender>
+   <signal>sliderReleased()</signal>
    <receiver>player</receiver>
-   <slot>capture()</slot>
+   <slot>start()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>465</x>
-     <y>713</y>
+     <x>332</x>
+     <y>660</y>
     </hint>
     <hint type="destinationlabel">
-     <x>470</x>
-     <y>467</y>
+     <x>340</x>
+     <y>479</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>player</sender>
+   <signal>bePaused()</signal>
+   <receiver>start</receiver>
+   <slot>setPlay()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>614</x>
+     <y>476</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>473</x>
+     <y>719</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>player</sender>
+   <signal>bePlayed()</signal>
+   <receiver>start</receiver>
+   <slot>setPause()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>579</x>
+     <y>534</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>473</x>
+     <y>719</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>seekBar</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>startTime</receiver>
-   <slot>setTime(int)</slot>
+   <signal>sliderMoved(int)</signal>
+   <receiver>player</receiver>
+   <slot>seek(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>485</x>
-     <y>667</y>
+     <x>498</x>
+     <y>664</y>
     </hint>
     <hint type="destinationlabel">
-     <x>36</x>
-     <y>660</y>
+     <x>388</x>
+     <y>448</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>player</sender>
+   <signal>timeUpdate(int)</signal>
+   <receiver>seekBar</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>486</x>
+     <y>361</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>576</x>
+     <y>664</y>
     </hint>
    </hints>
   </connection>
@@ -396,8 +552,8 @@
      <y>535</y>
     </hint>
     <hint type="destinationlabel">
-     <x>935</x>
-     <y>664</y>
+     <x>831</x>
+     <y>665</y>
     </hint>
    </hints>
   </connection>
@@ -412,8 +568,24 @@
      <y>500</y>
     </hint>
     <hint type="destinationlabel">
-     <x>652</x>
-     <y>665</y>
+     <x>743</x>
+     <y>664</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>capture</sender>
+   <signal>pressed()</signal>
+   <receiver>player</receiver>
+   <slot>capture()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>432</x>
+     <y>719</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>470</x>
+     <y>467</y>
     </hint>
    </hints>
   </connection>
@@ -435,83 +607,54 @@
   </connection>
   <connection>
    <sender>seekBar</sender>
-   <signal>sliderReleased()</signal>
-   <receiver>player</receiver>
-   <slot>start()</slot>
+   <signal>valueChanged(int)</signal>
+   <receiver>startTime</receiver>
+   <slot>setTime(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>332</x>
+     <x>576</x>
+     <y>664</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>36</x>
      <y>660</y>
     </hint>
-    <hint type="destinationlabel">
-     <x>340</x>
-     <y>479</y>
-    </hint>
    </hints>
   </connection>
   <connection>
-   <sender>seekBar</sender>
-   <signal>sliderMoved(int)</signal>
+   <sender>doubleSpinBox</sender>
+   <signal>valueChanged(double)</signal>
    <receiver>player</receiver>
-   <slot>seek(int)</slot>
+   <slot>setSnip(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>407</x>
-     <y>669</y>
+     <x>956</x>
+     <y>57</y>
     </hint>
     <hint type="destinationlabel">
-     <x>388</x>
-     <y>448</y>
+     <x>698</x>
+     <y>342</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>player</sender>
-   <signal>bePaused()</signal>
-   <receiver>start</receiver>
-   <slot>setPlay()</slot>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Player</receiver>
+   <slot>saveChart()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>614</x>
-     <y>476</y>
+     <x>959</x>
+     <y>714</y>
     </hint>
     <hint type="destinationlabel">
-     <x>521</x>
-     <y>731</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>player</sender>
-   <signal>bePlayed()</signal>
-   <receiver>start</receiver>
-   <slot>setPause()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>579</x>
-     <y>534</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>511</x>
-     <y>717</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>player</sender>
-   <signal>timeUpdate(int)</signal>
-   <receiver>seekBar</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>486</x>
-     <y>361</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>485</x>
-     <y>667</y>
+     <x>972</x>
+     <y>755</y>
     </hint>
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>saveChart()</slot>
+ </slots>
 </ui>

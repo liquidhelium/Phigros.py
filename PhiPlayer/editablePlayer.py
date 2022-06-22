@@ -8,6 +8,7 @@ class EditablePlayer(IntegratedPlayer):
     def __init__(self, *args) -> None:
         super().__init__(*args)
         self.tool: Tool = selectTool
+        self.snip: float = 0.01
 
     def mousePressEvent(self, a0) -> None:
         return self.tool.mousePress(a0, self)
@@ -25,3 +26,6 @@ class EditablePlayer(IntegratedPlayer):
             self.tool = moveTool
         else:
             super().keyPressEvent(a0)
+        
+    def setSnip(self, snip: float):
+        self.snip = snip

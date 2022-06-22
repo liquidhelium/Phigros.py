@@ -37,9 +37,9 @@ def makeOneNumEvents(obj):
     return Events([OneNumEvent(**event) for event in obj])
 
 
-def makeNote(obj, parent):
+def makeNote(obj, parent, below = False):
     return Note(parent, obj["type"], obj["time"], obj["positionX"], obj["holdTime"],
-                obj["speed"], obj["floorPosition"])
+                obj["speed"], obj["floorPosition"],below)
 
 
 def makeLine(obj):
@@ -52,7 +52,7 @@ def makeLine(obj):
                 makeOneNumEvents(obj["judgeLineRotateEvents"]))
     line.notesAbove = Notes(line, [makeNote(note, line)
                             for note in obj["notesAbove"]])
-    line.notesBelow = Notes(line, [makeNote(note, line)
+    line.notesBelow = Notes(line, [makeNote(note, line, True)
                             for note in obj["notesBelow"]])
     return line
 

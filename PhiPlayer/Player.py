@@ -1,7 +1,9 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QWidget
 from .GUI_player import Ui_Player
 from .integrated import IntegratedPlayer
+import pickle
 
+MAGIC_NUMBER = b"PhiChart"
 
 class PhiPlayer(QWidget):
     def __init__(self, *args) -> None:
@@ -15,6 +17,7 @@ class PhiPlayer(QWidget):
         filters = \
             [
                 "Phigros 官谱 (*.json)",
+                "自定义谱面 (*.phi)",
                 "图片文件 (*.png)",
                 "所有文件 (*)"
             ]
@@ -26,7 +29,15 @@ class PhiPlayer(QWidget):
         if file[1] == filters[0]:
             player.loadSong(chartAddr=file[0])
         elif file[1] == filters[1]:
+            with open(file[0], "rb") as f:
+                if not f.read(len(MAGIC_NUMBER)) == MAGIC_NUMBER:
+                    raise ValueError("Bad magic number, this is not a chart")
+                f.readline()
+                player.song.chart = pickle.load(f)
+                player.loadSong()
+        elif file[1] == filters[2]:
             player.loadSong(illustrationAddr=file[0])
+        
         else:
             player.loadSong(chartAddr=file[0])
 
@@ -44,13 +55,19 @@ class PhiPlayer(QWidget):
 
     def toogle(self):
         self.ui.player.toggle()
+    
+    def saveChart(self):
+        file = open("test.phi", "wb")
+        file.write(b"PhiChart v1.0 alpha\n")
+        pickle.dump(self.ui.player.chart, file)
+
 
 
 if __name__ == "__main__":
     app = QApplication([])
     window = PhiPlayer()
     window.loadSong(
-        chartAddr="./assets/Introduction_Chart.json",
+        chartAddr="./assets/Introduction_chart.json",
         musicAddr="./assets/Introduction.mp3",
         illustrationAddr="./assets/IllustrationBlur.png",
     )

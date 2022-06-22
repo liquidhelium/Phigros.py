@@ -1,4 +1,4 @@
-from bisect import bisect
+from bisect import bisect, bisect_left
 
 
 def interpolate(x1, y1, x2, y2, x):
@@ -75,3 +75,8 @@ class Events(list[Event]):
 
     def getNoCache(self, time):
         return self[bisect(self, Event(time, time))-1].get(time)
+
+    def bisectForFloor(self, floor: float) -> SpeedEvent:
+        def key(ev: SpeedEvent):
+            return ev.floorPos
+        return self[bisect_left(self, floor, key=key)-1]

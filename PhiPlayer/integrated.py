@@ -108,12 +108,7 @@ class IntegratedPlayer(QWidget):
         # painter.setBrush(QColor(0,0,0,0))
         # painter.setWindow(0, self.height(), self.width(), -self.height())
         painter.setWorldTransform(self.TRANSLATION)
-        if not self.paused:
-            self.now = time.perf_counter()
-            # self._syncSong(int((self.now-self.startTime)* 1000))
-        else:
-            self.now = self.startTime+self.pausedAt
-        painter.drawSong((self.now-self.startTime),
+        painter.drawSong((self.getchartRTime()),
                          self.song)
         if self.mousePressedPos and self.mousePressAndMovedPos and self.drawr:
             painter.setBrush(QColor(86, 114, 240, 160))
@@ -124,6 +119,17 @@ class IntegratedPlayer(QWidget):
         painter.drawText(10, 40, str(self.fpsPrint))
         self.fps += 1
         painter.end()
+
+    def getchartRTime(self):
+        return self.getNowtime()-self.startTime
+
+    def getNowtime(self):
+        if not self.paused:
+            now = time.perf_counter()
+            # self._syncSong(int((self.now-self.startTime)* 1000))
+        else:
+            now = self.startTime+self.pausedAt
+        return now
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
         oldSize = self.size()
