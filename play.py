@@ -1,6 +1,6 @@
-# import pyjion;
-# pyjion.enable()
-# pyjion.config(pgc=True,level=1)
+import pyjion;
+pyjion.enable()
+pyjion.config(pgc=True,level=1)
 from PhiPlayer.GUI_phi import Ui_win
 from PyQt5.QtWidgets import QApplication, QMainWindow
 

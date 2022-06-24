@@ -58,7 +58,7 @@ class Note:
                 trans.translate(pos[0], pos[1])
                 trans.rotate(ang, Qt.Axis.ZAxis)
                 self.hitAnimations.append(HitAnimation(phiToSecond(
-                    time, self.parent.bpm), *trans.map(self.FloorX, 0)))
+                    float(time), self.parent.bpm), *trans.map(self.FloorX, 0)))
 
     def getFloorY(self):
         return self.floorPos
